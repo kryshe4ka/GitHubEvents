@@ -9,7 +9,7 @@ import Foundation
 
 struct NetworkManager {
     
-    func fetchEvents(page: Int, completion: @escaping (_ events: [Event]?,_ error: String?)->()){
+    static func fetchEvents(page: Int, completion: @escaping (_ events: [Event]?,_ error: String?)->()){
         guard let url = URL(string: "https://api.github.com/events?page=\(page)") else { return }
 
         URLSession.shared.dataTask(with: url) { data, response, error in

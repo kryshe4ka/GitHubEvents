@@ -11,7 +11,7 @@ import UIKit
 class ContentView: UIView {
     
     let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: UITableView.Style.grouped)
+        let tableView = UITableView(frame: .zero, style: UITableView.Style.plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
         return tableView

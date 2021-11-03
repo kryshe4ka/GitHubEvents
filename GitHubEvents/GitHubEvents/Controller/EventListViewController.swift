@@ -11,7 +11,6 @@ class EventListViewController: UIViewController {
 
     var contentView = ContentView()
     var dataSource = EventListDataSource()
-    var networkManager = NetworkManager()
     
     override func loadView() {
         view = contentView
@@ -20,13 +19,9 @@ class EventListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         contentView.tableView.dataSource = dataSource
-        
-        // add title for navigation bar
-        self.navigationItem.title = "Table of events"
-        
-//        dataSource.fetchEvents()
-        
-        networkManager.fetchEvents(page: 1) { events, error in
+        setUpNavigation()
+                
+        NetworkManager.fetchEvents(page: 1) { events, error in
             if let events = events {
                 /// Update event items on main thread
                 DispatchQueue.main.async {
@@ -35,6 +30,11 @@ class EventListViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    func setUpNavigation() {
+        self.navigationItem.title = "Table of events"
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red]
     }
 
 }

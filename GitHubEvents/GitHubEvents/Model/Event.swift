@@ -8,7 +8,6 @@
 import Foundation
 
 struct Event: Codable {
-    let id: String?
     let type: String?
     struct Actor: Codable {
         let display_login: String?
