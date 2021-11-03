@@ -14,6 +14,7 @@
 		3D7D9FB3273272D5009DA1EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D7D9FB1273272D5009DA1EF /* LaunchScreen.storyboard */; };
 		3D7D9FBB2732977A009DA1EF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D7D9FBA2732977A009DA1EF /* ContentView.swift */; };
 		3D7D9FBD27329E4F009DA1EF /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D7D9FBC27329E4F009DA1EF /* TableViewCell.swift */; };
+		3D7D9FBF2732B2F5009DA1EF /* EventListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D7D9FBE2732B2F5009DA1EF /* EventListDataSource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		3D7D9FB4273272D5009DA1EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D7D9FBA2732977A009DA1EF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3D7D9FBC27329E4F009DA1EF /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		3D7D9FBE2732B2F5009DA1EF /* EventListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListDataSource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				3D7D9FA6273272D3009DA1EF /* AppDelegate.swift */,
 				3D7D9FA8273272D3009DA1EF /* SceneDelegate.swift */,
 				3D7D9FAA273272D3009DA1EF /* EventListViewController.swift */,
+				3D7D9FBE2732B2F5009DA1EF /* EventListDataSource.swift */,
 				3D7D9FBA2732977A009DA1EF /* ContentView.swift */,
 				3D7D9FBC27329E4F009DA1EF /* TableViewCell.swift */,
 				3D7D9FAF273272D5009DA1EF /* Assets.xcassets */,
@@ -143,6 +146,7 @@
 				3D7D9FBD27329E4F009DA1EF /* TableViewCell.swift in Sources */,
 				3D7D9FAB273272D3009DA1EF /* EventListViewController.swift in Sources */,
 				3D7D9FA7273272D3009DA1EF /* AppDelegate.swift in Sources */,
+				3D7D9FBF2732B2F5009DA1EF /* EventListDataSource.swift in Sources */,
 				3D7D9FBB2732977A009DA1EF /* ContentView.swift in Sources */,
 				3D7D9FA9273272D3009DA1EF /* SceneDelegate.swift in Sources */,
 			);
