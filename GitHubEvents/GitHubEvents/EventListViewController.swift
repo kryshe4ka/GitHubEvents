@@ -21,7 +21,10 @@ class EventListViewController: UIViewController {
         contentView.tableView.dataSource = dataSource
         
         // add title for navigation bar
-        self.navigationItem.title = "Table of events"        
+        self.navigationItem.title = "Table of events"
+        
+        dataSource.fetchEvents()
+        contentView.tableView.reloadData()
     }
 
 }
