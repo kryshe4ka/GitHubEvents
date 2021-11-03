@@ -5,7 +5,6 @@
 //  Created by Liza Kryshkovskaya on 3.11.21.
 //
 
-import Foundation
 import UIKit
 
 class EventListDataSource: NSObject, UITableViewDataSource {
