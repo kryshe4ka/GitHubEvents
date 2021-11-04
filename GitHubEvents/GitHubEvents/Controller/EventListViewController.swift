@@ -46,7 +46,19 @@ extension EventListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let eventDetailsViewController = EventDetailsViewController(event: dataSource.events[indexPath.row])
+        guard let cell = tableView.cellForRow(at: indexPath) as? TableViewCell else { return }
+
+        guard let image = cell.authorImage.image else { return }
+        print(image)
+//        let eventDetailsViewController = EventDetailsViewController(event: dataSource.events[indexPath.row], authorImage: image)
+        
+        let eventDetailsViewController = EventDetailsViewController()
+        eventDetailsViewController.image = image
+        eventDetailsViewController.event = dataSource.events[indexPath.row]
+        
         self.navigationController?.pushViewController(eventDetailsViewController, animated: true)
+        
+//      self.present(eventDetailsViewController, animated: true, completion: nil)
+
     }
 }

@@ -27,7 +27,7 @@ class TableViewCell: UITableViewCell {
                     }
                 }
             }
-        }
+    }
     
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
