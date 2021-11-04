@@ -19,11 +19,18 @@ class EventListDataSource: NSObject, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as? TableViewCell else {
             return UITableViewCell()
         }
-        cell.authorName.text = self.events[indexPath.row].actor?.display_login
-        cell.eventType.text = self.events[indexPath.row].type
-        cell.eventDate.text = self.events[indexPath.row].created_at
+        cell.event = self.events[indexPath.row]
+//        cell.authorName.text = self.events[indexPath.row].author?.authorName
+//        cell.eventType.text = self.events[indexPath.row].type
+//        cell.eventDate.text = self.events[indexPath.row].date
 
         return cell
     }
     
+}
+
+extension EventListDataSource: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+       return 100
+    }
 }

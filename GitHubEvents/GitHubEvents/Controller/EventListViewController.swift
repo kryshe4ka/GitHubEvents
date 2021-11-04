@@ -19,6 +19,7 @@ class EventListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         contentView.tableView.dataSource = dataSource
+        contentView.tableView.delegate = dataSource
         setUpNavigation()
                 
         NetworkManager.fetchEvents(page: 1) { events, error in

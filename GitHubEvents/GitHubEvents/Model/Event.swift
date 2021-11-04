@@ -8,15 +8,26 @@
 import Foundation
 
 struct Event: Codable {
-    let type: String?
     struct Actor: Codable {
-        let display_login: String?
-        let avatar_url: String?
+        let authorName: String?
+        let avatarUrl: String?
+        enum CodingKeys: String, CodingKey {
+            case authorName = "display_login"
+            case avatarUrl = "avatar_url"
+        }
     }
-    let actor: Actor?
+    let author: Actor?
     struct Repo: Codable {
         let name: String?
     }
     let repo: Repo
-    let created_at: String
+    let type: String?
+    let date: String?
+
+    enum CodingKeys: String, CodingKey {
+        case author = "actor"
+        case repo
+        case type
+        case date = "created_at"
+    }
 }

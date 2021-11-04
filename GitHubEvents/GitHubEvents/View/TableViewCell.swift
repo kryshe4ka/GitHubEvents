@@ -9,6 +9,44 @@ import UIKit
 
 class TableViewCell: UITableViewCell {
     
+    var event:Event? {
+            didSet {
+                guard let eventItem = event else {return}
+                if let type = eventItem.type {
+                    eventType.text = type
+                }
+                if let date = eventItem.date {
+                    eventDate.text = date
+                }
+                if let author = eventItem.author {
+                    if let avatarUrl = author.avatarUrl {
+                        displayAuthorAvatar(avatarUrl: avatarUrl)
+                    }
+                    if let name = author.authorName {
+                        authorName.text = name
+                    }
+                }
+            }
+        }
+    
+    func displayAuthorAvatar(avatarUrl: String) {
+      guard let avatarUrl = URL(string: avatarUrl) else {
+        return
+      }
+      let task = URLSession.shared.downloadTask(with: avatarUrl) { location, response, error in
+        
+        guard let location = location,
+              let imageData = try? Data(contentsOf: location),
+          let image = UIImage(data: imageData) else {
+            return
+        }
+        DispatchQueue.main.async {
+          self.authorImage.image = image
+        }
+      }
+      task.resume()
+    }
+    
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
         authorImage.contentMode = .scaleAspectFill
@@ -68,10 +106,11 @@ class TableViewCell: UITableViewCell {
         authorImage.widthAnchor.constraint(equalToConstant:70).isActive = true
         authorImage.heightAnchor.constraint(equalToConstant:70).isActive = true
         
-        containerView.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
         containerView.leadingAnchor.constraint(equalTo:self.authorImage.trailingAnchor, constant:10).isActive = true
         containerView.trailingAnchor.constraint(equalTo:self.contentView.trailingAnchor, constant:-10).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant:70).isActive = true
+        containerView.topAnchor.constraint(equalTo:self.topAnchor, constant:10).isActive = true
+        containerView.bottomAnchor.constraint(equalTo:self.bottomAnchor, constant:-10).isActive = true
+
 
         eventType.topAnchor.constraint(equalTo: self.containerView.topAnchor).isActive = true
         eventType.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor).isActive = true
