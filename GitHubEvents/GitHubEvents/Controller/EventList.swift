@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ContentView: UIView {
+class EventList: UIView {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: UITableView.Style.plain)

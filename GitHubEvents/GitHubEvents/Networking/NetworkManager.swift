@@ -30,7 +30,24 @@ struct NetworkManager {
                 print("unable to decode")
                 return
             }
+            // на этом этапе есть массис events, каждый элемент которого хранит ссылку на картинку, но картинка еще не загружена
             completion(events, nil)
         }.resume()
     }
+    
+    static func downloadImageData(imageUrl: String, completion: @escaping (_ imageData: Data?, _ error: String?)->()) {
+        guard let imageUrl = URL(string: imageUrl) else {
+          return
+        }
+        let task = URLSession.shared.downloadTask(with: imageUrl) { location, response, error in
+          
+            guard let location = location, let imageData = try? Data(contentsOf: location) else {
+                print("imageData error")
+                completion(nil, "Please check your data.")
+                return
+            }
+            completion(imageData, nil)
+        }
+        task.resume()
+    }    
 }

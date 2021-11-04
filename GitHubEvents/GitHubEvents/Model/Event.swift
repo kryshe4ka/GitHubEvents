@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct Event: Codable {
     struct Actor: Codable {
@@ -23,11 +24,13 @@ struct Event: Codable {
     let repo: Repo
     let type: String?
     let date: String?
+    var avatarImage: Data?
 
     enum CodingKeys: String, CodingKey {
         case author = "actor"
         case repo
         case type
         case date = "created_at"
+        case avatarImage
     }
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TableViewCell: UITableViewCell {
+class EventListTableViewCell: UITableViewCell {
     
     var event:Event? {
             didSet {
@@ -19,12 +19,12 @@ class TableViewCell: UITableViewCell {
                     eventDate.text = date
                 }
                 if let author = eventItem.author {
-                    if let avatarUrl = author.avatarUrl {
-                        displayAuthorAvatar(avatarUrl: avatarUrl)
-                    }
                     if let name = author.authorName {
                         authorName.text = name
                     }
+                }
+                if let imageData = eventItem.avatarImage {
+                    authorImage.image = UIImage(data: imageData)
                 }
             }
     }
@@ -65,12 +65,6 @@ class TableViewCell: UITableViewCell {
       view.clipsToBounds = true // this will make sure its children do not go out of the boundary
       return view
     }()
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -80,50 +74,38 @@ class TableViewCell: UITableViewCell {
         containerView.addSubview(eventType)
         containerView.addSubview(authorName)
         containerView.addSubview(eventDate)
-        
-        contentView.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        
-        authorImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        authorImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant:10).isActive = true
-        authorImage.widthAnchor.constraint(equalToConstant:70).isActive = true
-        authorImage.heightAnchor.constraint(equalToConstant:70).isActive = true
-        
-        containerView.leadingAnchor.constraint(equalTo:self.authorImage.trailingAnchor, constant:10).isActive = true
-        containerView.trailingAnchor.constraint(equalTo:self.contentView.trailingAnchor, constant:-10).isActive = true
-        containerView.topAnchor.constraint(equalTo:self.topAnchor, constant:10).isActive = true
-        containerView.bottomAnchor.constraint(equalTo:self.bottomAnchor, constant:-10).isActive = true
-
-
-        eventType.topAnchor.constraint(equalTo: self.containerView.topAnchor).isActive = true
-        eventType.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor).isActive = true
-        eventType.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor).isActive = true
-
-        authorName.topAnchor.constraint(equalTo:self.eventType.bottomAnchor).isActive = true
-        authorName.leadingAnchor.constraint(equalTo:self.containerView.leadingAnchor).isActive = true
-        
-        eventDate.bottomAnchor.constraint(equalTo:self.containerView.bottomAnchor).isActive = true
-        eventDate.leadingAnchor.constraint(equalTo:self.containerView.leadingAnchor).isActive = true
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func displayAuthorAvatar(avatarUrl: String) {
-      guard let avatarUrl = URL(string: avatarUrl) else {
-        return
-      }
-      let task = URLSession.shared.downloadTask(with: avatarUrl) { location, response, error in
-        
-        guard let location = location,
-              let imageData = try? Data(contentsOf: location),
-          let image = UIImage(data: imageData) else {
-            return
-        }
-        DispatchQueue.main.async {
-          self.authorImage.image = image
-        }
-      }
-      task.resume()
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(false, animated: animated)
+    }
+    
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            authorImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            authorImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant:10),
+            authorImage.widthAnchor.constraint(equalToConstant:70),
+            authorImage.heightAnchor.constraint(equalToConstant:70),
+            
+            containerView.leadingAnchor.constraint(equalTo:self.authorImage.trailingAnchor, constant:10),
+            containerView.trailingAnchor.constraint(equalTo:self.contentView.trailingAnchor, constant:-10),
+            containerView.topAnchor.constraint(equalTo:self.topAnchor, constant:10),
+            containerView.bottomAnchor.constraint(equalTo:self.bottomAnchor, constant:-10),
+
+            eventType.topAnchor.constraint(equalTo: self.containerView.topAnchor),
+            eventType.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor),
+            eventType.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor),
+
+            authorName.topAnchor.constraint(equalTo:self.eventType.bottomAnchor),
+            authorName.leadingAnchor.constraint(equalTo:self.containerView.leadingAnchor),
+            
+            eventDate.bottomAnchor.constraint(equalTo:self.containerView.bottomAnchor),
+            eventDate.leadingAnchor.constraint(equalTo:self.containerView.leadingAnchor),
+        ])
     }
 }
