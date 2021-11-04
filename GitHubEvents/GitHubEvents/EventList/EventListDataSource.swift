@@ -20,7 +20,15 @@ class EventListDataSource: NSObject, UITableViewDataSource {
             return UITableViewCell()
         }
         cell.event = self.events[indexPath.row]
+        
+        // Check if the last row number is the same as the last current data element
+        if indexPath.row == self.events.count - 1 {
+            self.loadMore()
+        }
         return cell
     }
     
+    func loadMore() {
+        print("loadMore")
+    }
 }

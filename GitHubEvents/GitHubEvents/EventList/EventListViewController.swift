@@ -32,7 +32,6 @@ class EventListViewController: UIViewController {
             }
         }
     }
-    var dataArray: [Data] = []
 
     func fetchAvatars() {
         for i in 0..<self.dataSource.events.count {
@@ -43,7 +42,6 @@ class EventListViewController: UIViewController {
                 guard let imageData = imageData else {
                     return
                 }
-                self.dataArray.append(imageData)
                 
                 DispatchQueue.main.async {
                     self.dataSource.events[i].avatarImage = imageData

@@ -34,6 +34,8 @@ class EventDetailsContentView: UIView {
         repo.font = UIFont.monospacedSystemFont(ofSize: 16, weight: .light)
         repo.textColor =  UIColor.link
         repo.translatesAutoresizingMaskIntoConstraints = false
+        repo.allowsDefaultTighteningForTruncation = true
+        repo.textAlignment = .center
         return repo
     }()
     
@@ -76,6 +78,9 @@ class EventDetailsContentView: UIView {
             authorImage.widthAnchor.constraint(equalToConstant: width),
             
             repo.centerXAnchor.constraint(equalTo: centerXAnchor),
+            repo.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            repo.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+
             repo.topAnchor.constraint(equalTo: authorImage.bottomAnchor, constant: 20),
             
             authorName.topAnchor.constraint(equalTo: repo.bottomAnchor, constant: 40),
