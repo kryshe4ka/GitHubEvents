@@ -15,7 +15,7 @@ class EventDetailsContentView: UIView {
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
         authorImage.contentMode = .scaleAspectFill
-        authorImage.translatesAutoresizingMaskIntoConstraints = false // enable autolayout
+        authorImage.translatesAutoresizingMaskIntoConstraints = false
         authorImage.layer.cornerRadius = 35
         authorImage.clipsToBounds = true
         return authorImage
@@ -23,16 +23,16 @@ class EventDetailsContentView: UIView {
     
     let authorName: UILabel = {
         let authorName = UILabel()
-        authorName.font = UIFont.boldSystemFont(ofSize: 16)
-        authorName.textColor =  UIColor.lightGray
+        authorName.font = UIFont.boldSystemFont(ofSize: 22)
+        authorName.textColor =  UIColor.red
         authorName.translatesAutoresizingMaskIntoConstraints = false
         return authorName
     }()
 
     let repo: UILabel = {
         let repo = UILabel()
-        repo.font = UIFont.boldSystemFont(ofSize: 16)
-        repo.textColor =  UIColor.lightGray
+        repo.font = UIFont.monospacedSystemFont(ofSize: 16, weight: .light)
+        repo.textColor =  UIColor.link
         repo.translatesAutoresizingMaskIntoConstraints = false
         return repo
     }()
@@ -45,11 +45,11 @@ class EventDetailsContentView: UIView {
         }
         if let author = event.author {
             if let name = author.authorName {
-                authorName.text = name
+                authorName.text = "Author: " + name
             }
         }
         if let repoName = event.repo.name {
-            repo.text = repoName
+            repo.text = "Repo: " + repoName
         }
         createSubviews()
     }
@@ -68,11 +68,19 @@ class EventDetailsContentView: UIView {
     }
     
     func addConstrains() {
+        let width = UIScreen.main.bounds.height / 2.5
         NSLayoutConstraint.activate([
-            authorImage.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
-            authorImage.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
-            authorImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            authorImage.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20)
+            authorImage.centerXAnchor.constraint(equalTo: centerXAnchor),
+            authorImage.topAnchor.constraint(equalTo: topAnchor, constant: 100),
+            authorImage.heightAnchor.constraint(equalToConstant: width),
+            authorImage.widthAnchor.constraint(equalToConstant: width),
+            
+            repo.centerXAnchor.constraint(equalTo: centerXAnchor),
+            repo.topAnchor.constraint(equalTo: authorImage.bottomAnchor, constant: 20),
+            
+            authorName.topAnchor.constraint(equalTo: repo.bottomAnchor, constant: 40),
+            authorName.centerXAnchor.constraint(equalTo: centerXAnchor)
+            
         ])
     }
     
