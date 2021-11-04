@@ -19,7 +19,7 @@ class EventListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         contentView.tableView.dataSource = dataSource
-        contentView.tableView.delegate = dataSource
+        contentView.tableView.delegate = self
         setUpNavigation()
                 
         NetworkManager.fetchEvents(page: 1) { events, error in
@@ -37,5 +37,16 @@ class EventListViewController: UIViewController {
         self.navigationItem.title = "Table of events"
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red]
     }
+}
 
+extension EventListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+       return 100
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let eventDetailsViewController = EventDetailsViewController(event: dataSource.events[indexPath.row])
+        self.navigationController?.pushViewController(eventDetailsViewController, animated: true)
+    }
 }

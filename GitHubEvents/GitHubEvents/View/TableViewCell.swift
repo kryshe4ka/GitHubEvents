@@ -29,24 +29,6 @@ class TableViewCell: UITableViewCell {
             }
         }
     
-    func displayAuthorAvatar(avatarUrl: String) {
-      guard let avatarUrl = URL(string: avatarUrl) else {
-        return
-      }
-      let task = URLSession.shared.downloadTask(with: avatarUrl) { location, response, error in
-        
-        guard let location = location,
-              let imageData = try? Data(contentsOf: location),
-          let image = UIImage(data: imageData) else {
-            return
-        }
-        DispatchQueue.main.async {
-          self.authorImage.image = image
-        }
-      }
-      task.resume()
-    }
-    
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
         authorImage.contentMode = .scaleAspectFill
@@ -127,4 +109,21 @@ class TableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func displayAuthorAvatar(avatarUrl: String) {
+      guard let avatarUrl = URL(string: avatarUrl) else {
+        return
+      }
+      let task = URLSession.shared.downloadTask(with: avatarUrl) { location, response, error in
+        
+        guard let location = location,
+              let imageData = try? Data(contentsOf: location),
+          let image = UIImage(data: imageData) else {
+            return
+        }
+        DispatchQueue.main.async {
+          self.authorImage.image = image
+        }
+      }
+      task.resume()
+    }
 }

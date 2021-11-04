@@ -10,6 +10,8 @@ import UIKit
 class EventListDataSource: NSObject, UITableViewDataSource {
     
     var events: [Event] = []
+    //var vc = eventDetailsViewController()
+
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return events.count
@@ -20,17 +22,7 @@ class EventListDataSource: NSObject, UITableViewDataSource {
             return UITableViewCell()
         }
         cell.event = self.events[indexPath.row]
-//        cell.authorName.text = self.events[indexPath.row].author?.authorName
-//        cell.eventType.text = self.events[indexPath.row].type
-//        cell.eventDate.text = self.events[indexPath.row].date
-
         return cell
     }
     
-}
-
-extension EventListDataSource: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-       return 100
-    }
 }
