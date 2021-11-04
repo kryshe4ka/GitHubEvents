@@ -71,9 +71,8 @@
 				3D7D9FC22732D8E2009DA1EF /* Application */,
 				3D7D9FCD273437C3009DA1EF /* EventList */,
 				3D7D9FCE273437EE009DA1EF /* EventDetails */,
-				3D7D9FC62732EDEF009DA1EF /* Networking */,
 				3D7D9FC32732D924009DA1EF /* Model */,
-				3D7D9FAF273272D5009DA1EF /* Assets.xcassets */,
+				3D7D9FC62732EDEF009DA1EF /* Networking */,
 				3D7D9FB4273272D5009DA1EF /* Info.plist */,
 			);
 			path = GitHubEvents;
@@ -85,6 +84,7 @@
 				3D7D9FA6273272D3009DA1EF /* AppDelegate.swift */,
 				3D7D9FA8273272D3009DA1EF /* SceneDelegate.swift */,
 				3D7D9FB1273272D5009DA1EF /* LaunchScreen.storyboard */,
+				3D7D9FAF273272D5009DA1EF /* Assets.xcassets */,
 			);
 			path = Application;
 			sourceTree = "<group>";
