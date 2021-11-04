@@ -30,6 +30,9 @@ class EventListViewController: UIViewController {
                 self.dataSource.events = events
                 self.fetchAvatars()
             }
+            if error != nil {
+                print(error!)
+            }
         }
     }
 

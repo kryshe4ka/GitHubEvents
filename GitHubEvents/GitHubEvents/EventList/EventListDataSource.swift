@@ -22,13 +22,43 @@ class EventListDataSource: NSObject, UITableViewDataSource {
         cell.event = self.events[indexPath.row]
         
         // Check if the last row number is the same as the last current data element
-        if indexPath.row == self.events.count - 1 {
-            self.loadMore()
+        if indexPath.row == self.events.count - 1 && page <= 10 {
+            self.loadMore(tableView)
         }
         return cell
     }
+    var page = 1
     
-    func loadMore() {
+    func loadMore(_ tableView: UITableView) {
         print("loadMore")
+        page += 1
+        NetworkManager.fetchEvents(page: page) { events, error in
+            if let events = events {
+                self.events = events
+                self.fetchAvatars(tableView)
+            }
+            if error != nil {
+                print(error!)
+            }
+        }
+    }
+    
+    func fetchAvatars(_ tableView: UITableView) {
+        for i in 0..<self.events.count {
+            guard let avatarUrl = self.events[i].author?.avatarUrl else {
+                return
+            }
+            NetworkManager.downloadImageData(imageUrl: avatarUrl) { imageData, error in
+                guard let imageData = imageData else {
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.events[i].avatarImage = imageData
+                    tableView.reloadData()
+                }
+            }
+        }
+        return
     }
 }
