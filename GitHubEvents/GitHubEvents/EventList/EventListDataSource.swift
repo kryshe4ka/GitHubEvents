@@ -22,7 +22,7 @@ class EventListDataSource: NSObject, UITableViewDataSource {
         cell.event = self.events[indexPath.row]
         
         // Check if the last row number is the same as the last current data element
-        if indexPath.row == self.events.count - 1 && page <= 10 {
+        if indexPath.row == self.events.count - 1 && page <= 3 {
             self.loadMore(tableView)
         }
         return cell
@@ -34,7 +34,7 @@ class EventListDataSource: NSObject, UITableViewDataSource {
         page += 1
         NetworkManager.fetchEvents(page: page) { events, error in
             if let events = events {
-                self.events = events
+                self.events.append(contentsOf: events)
                 self.fetchAvatars(tableView)
             }
             if error != nil {
