@@ -28,6 +28,7 @@ class EventDetailsContentView: UIView {
         authorName.font = UIFont.boldSystemFont(ofSize: 22)
         authorName.textColor =  UIColor.red
         authorName.translatesAutoresizingMaskIntoConstraints = false
+        authorName.numberOfLines = 0
         return authorName
     }()
 
@@ -38,6 +39,7 @@ class EventDetailsContentView: UIView {
         repo.translatesAutoresizingMaskIntoConstraints = false
         repo.allowsDefaultTighteningForTruncation = true
         repo.textAlignment = .center
+        repo.numberOfLines = 0
         return repo
     }()
     
