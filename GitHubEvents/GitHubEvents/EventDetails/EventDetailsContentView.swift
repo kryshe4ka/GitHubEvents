@@ -11,6 +11,8 @@ import UIKit
 class EventDetailsContentView: UIView {
     
     var event: Event?
+    var imageHeightConstraitCompact = NSLayoutConstraint()
+    var imageHeightConstraitRegular = NSLayoutConstraint()
     
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
@@ -66,27 +68,38 @@ class EventDetailsContentView: UIView {
         addSubview(authorImage)
         addSubview(authorName)
         addSubview(repo)
-        addConstrains()
+        addConstraints()
+        
+        imageHeightConstraitCompact = authorImage.heightAnchor.constraint(equalToConstant: 200)
+        imageHeightConstraitRegular = authorImage.heightAnchor.constraint(equalToConstant: 310)
+        if UIDevice.current.orientation.isLandscape {
+            activateConstraitsForCompact()
+        } else {
+            activateConstraitsForRegular()
+        }
     }
     
-    func addConstrains() {
-        let width = UIScreen.main.bounds.height / 2.5
+    func activateConstraitsForRegular() {
+        imageHeightConstraitCompact.isActive = false
+        imageHeightConstraitRegular.isActive = true
+    }
+    
+    func activateConstraitsForCompact() {
+        imageHeightConstraitRegular.isActive = false
+        imageHeightConstraitCompact.isActive = true
+    }
+    
+    func addConstraints() {
         NSLayoutConstraint.activate([
+            authorImage.topAnchor.constraint(equalTo: topAnchor, constant: 80),
             authorImage.centerXAnchor.constraint(equalTo: centerXAnchor),
-            authorImage.topAnchor.constraint(equalTo: topAnchor, constant: 100),
-            authorImage.heightAnchor.constraint(equalToConstant: width),
-            authorImage.widthAnchor.constraint(equalToConstant: width),
-            
+            authorImage.widthAnchor.constraint(equalTo: authorImage.heightAnchor),
             repo.centerXAnchor.constraint(equalTo: centerXAnchor),
             repo.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             repo.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-
             repo.topAnchor.constraint(equalTo: authorImage.bottomAnchor, constant: 20),
-            
-            authorName.topAnchor.constraint(equalTo: repo.bottomAnchor, constant: 40),
+            authorName.topAnchor.constraint(equalTo: repo.bottomAnchor, constant: 20),
             authorName.centerXAnchor.constraint(equalTo: centerXAnchor)
-            
         ])
     }
-    
 }

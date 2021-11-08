@@ -27,4 +27,12 @@ class EventDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        if newCollection.verticalSizeClass == .regular {
+            eventDetailsContentView.activateConstraitsForRegular()
+        } else if newCollection.verticalSizeClass == .compact {
+            eventDetailsContentView.activateConstraitsForCompact()
+        }
+    }
 }
