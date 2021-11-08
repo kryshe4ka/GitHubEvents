@@ -13,6 +13,8 @@ class EventDetailsContentView: UIView {
     var event: Event?
     var imageHeightConstraitCompact = NSLayoutConstraint()
     var imageHeightConstraitRegular = NSLayoutConstraint()
+    var imageTopConstraitCompact = NSLayoutConstraint()
+    var imageTopConstraitRegular = NSLayoutConstraint()
     
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
@@ -72,8 +74,10 @@ class EventDetailsContentView: UIView {
         addSubview(repo)
         addConstraints()
         
-        imageHeightConstraitCompact = authorImage.heightAnchor.constraint(equalToConstant: 200)
+        imageHeightConstraitCompact = authorImage.heightAnchor.constraint(equalToConstant: 180)
         imageHeightConstraitRegular = authorImage.heightAnchor.constraint(equalToConstant: 310)
+        imageTopConstraitCompact = authorImage.topAnchor.constraint(equalTo: topAnchor, constant: 40)
+        imageTopConstraitRegular = authorImage.topAnchor.constraint(equalTo: topAnchor, constant: 100)
         if UIDevice.current.orientation.isLandscape {
             activateConstraitsForCompact()
         } else {
@@ -84,16 +88,20 @@ class EventDetailsContentView: UIView {
     func activateConstraitsForRegular() {
         imageHeightConstraitCompact.isActive = false
         imageHeightConstraitRegular.isActive = true
+        imageTopConstraitCompact.isActive = false
+        imageTopConstraitRegular.isActive = true
+
     }
     
     func activateConstraitsForCompact() {
         imageHeightConstraitRegular.isActive = false
         imageHeightConstraitCompact.isActive = true
+        imageTopConstraitCompact.isActive = true
+        imageTopConstraitRegular.isActive = false
     }
     
     func addConstraints() {
         NSLayoutConstraint.activate([
-            authorImage.topAnchor.constraint(equalTo: topAnchor, constant: 80),
             authorImage.centerXAnchor.constraint(equalTo: centerXAnchor),
             authorImage.widthAnchor.constraint(equalTo: authorImage.heightAnchor),
             repo.centerXAnchor.constraint(equalTo: centerXAnchor),
