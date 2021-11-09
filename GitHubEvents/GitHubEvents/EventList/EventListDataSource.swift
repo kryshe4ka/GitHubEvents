@@ -10,6 +10,7 @@ import UIKit
 class EventListDataSource: NSObject, UITableViewDataSource {
     
     var events: [Event] = []
+    let pageMAX = 10
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return events.count
@@ -22,7 +23,7 @@ class EventListDataSource: NSObject, UITableViewDataSource {
         cell.event = self.events[indexPath.row]
         
         // Check if the last row number is the same as the last current data element
-        if indexPath.row == self.events.count - 1 && page <= 3 {
+        if indexPath.row == self.events.count - 1 && page <= pageMAX {
             self.loadMore(tableView)
         }
         return cell
@@ -30,35 +31,48 @@ class EventListDataSource: NSObject, UITableViewDataSource {
     var page = 1
     
     func loadMore(_ tableView: UITableView) {
-        print("loadMore")
         page += 1
-        NetworkManager.fetchEvents(page: page) { events, error in
-            if let events = events {
-                self.events.append(contentsOf: events)
-                self.fetchAvatars(tableView)
+        fetchEvents(page: page) { [weak self] result in
+            switch result {
+            case .success(let events):
+                if let self = self {
+                    self.events.append(contentsOf: events)
+                    self.fetchAvatars(tableView)
+                }
+            case .failure(let error):
+                print("Error - \(error)")
             }
-            if error != nil {
-                print(error!)
+        }
+    }
+    
+    func fetchEvents(page: Int, completion: @escaping (Result<[Event], Error>) -> Void) {
+        NetworkClient.request(EventsRouter.events(page)).responseDecodable(of: [Event].self) { response in
+            switch response.result {
+            case .success(let events):
+                completion(.success(events))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
     
     func fetchAvatars(_ tableView: UITableView) {
         for i in 0..<self.events.count {
-            guard let avatarUrl = self.events[i].author?.avatarUrl else {
+            guard let imageUrl = self.events[i].author?.avatarUrl else {
                 return
             }
-            NetworkManager.downloadImageData(imageUrl: avatarUrl) { imageData, error in
-                guard let imageData = imageData else {
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self.events[i].avatarImage = imageData
-                    tableView.reloadData()
+            NetworkClient.download(imageUrl).responseData { response in
+                switch response.result {
+                case .failure(let error):
+                    print("Error while fetching the image: \(error)")
+                case .success(let imageData):
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        self.events[i].avatarImage = imageData
+                        tableView.reloadData()
+                    }
                 }
             }
         }
-        return
     }
 }

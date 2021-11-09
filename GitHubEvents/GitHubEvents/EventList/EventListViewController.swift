@@ -34,37 +34,6 @@ class EventListViewController: UIViewController {
             }
         }
     }
-    
-//    func fetchEvents() {
-//        NetworkManager.fetchEvents(page: 1) { events, error in
-//            if let events = events {
-//                self.dataSource.events = events
-//                self.fetchAvatars()
-//            }
-//            if error != nil {
-//                print(error!)
-//            }
-//        }
-//    }
-
-//    func fetchAvatars() {
-//        for i in 0..<self.dataSource.events.count {
-//            guard let avatarUrl = self.dataSource.events[i].author?.avatarUrl else {
-//                return
-//            }
-//            NetworkManager.downloadImageData(imageUrl: avatarUrl) { imageData, error in
-//                guard let imageData = imageData else {
-//                    return
-//                }
-//                
-//                DispatchQueue.main.async {
-//                    self.dataSource.events[i].avatarImage = imageData
-//                    self.eventListContentView.tableView.reloadData()
-//                }
-//            }
-//        }
-//        return
-//    }
         
     func setUpNavigation() {
         self.navigationItem.title = "Table of events"
@@ -88,7 +57,7 @@ extension EventListViewController: UITableViewDelegate {
 // MARK: - Networking calls
 extension EventListViewController {
     func getAllEvents(page: Int, completion: @escaping (Result<[Event], Error>) -> Void) {
-        AF.request("https://api.github.com/events?page=\(page)").responseDecodable(of: [Event].self) { response in
+        NetworkClient.request(EventsRouter.events(page)).responseDecodable(of: [Event].self) { response in
             switch response.result {
             case .success(let events):
                 completion(.success(events))
@@ -103,12 +72,13 @@ extension EventListViewController {
             guard let imageUrl = self.dataSource.events[i].author?.avatarUrl else {
                 return
             }
-            AF.download(imageUrl).validate().responseData { response in
+            NetworkClient.download(imageUrl).responseData { response in
                 switch response.result {
                 case .failure(let error):
                     print("Error while fetching the image: \(error)")
                 case .success(let imageData):
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
                         self.dataSource.events[i].avatarImage = imageData
                         self.eventListContentView.tableView.reloadData()
                     }
