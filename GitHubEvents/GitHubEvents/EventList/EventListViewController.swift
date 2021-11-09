@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class EventListViewController: UIViewController {
 
@@ -21,7 +22,22 @@ class EventListViewController: UIViewController {
         eventListContentView.tableView.dataSource = dataSource
         eventListContentView.tableView.delegate = self
         setUpNavigation()
-        fetchEvents()
+//        fetchEvents()
+        
+        // NEW!
+        getAllEvents(page: 1) { [weak self] result in
+            switch result {
+            case .success(let events):
+                print("я сработал!")
+                if let self = self {
+                    self.dataSource.events = events
+                    // Переделать:
+                    self.fetchAvatars()
+                }
+            case .failure(let error):
+                print("Error - \(error)")
+            }
+        }
     }
     
     func fetchEvents() {
@@ -70,5 +86,23 @@ extension EventListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let eventDetailsViewController = EventDetailsViewController(event: dataSource.events[indexPath.row])
         self.navigationController?.pushViewController(eventDetailsViewController, animated: true)
+    }
+}
+
+// MARK: - Networking calls
+extension EventListViewController {
+    func getAllEvents(page: Int, completion: @escaping (Result<[Event], Error>) -> Void) {
+        AF.request("https://api.github.com/events?page=\(page)").responseDecodable(of: [Event].self) { response in
+            switch response.result {
+            case .success(let events):
+                completion(.success(events))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func getAllAvatars() {
+        
     }
 }
