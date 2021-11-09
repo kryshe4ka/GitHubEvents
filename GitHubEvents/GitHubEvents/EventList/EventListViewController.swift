@@ -22,17 +22,12 @@ class EventListViewController: UIViewController {
         eventListContentView.tableView.dataSource = dataSource
         eventListContentView.tableView.delegate = self
         setUpNavigation()
-//        fetchEvents()
-        
-        // NEW!
         getAllEvents(page: 1) { [weak self] result in
             switch result {
             case .success(let events):
-                print("я сработал!")
                 if let self = self {
                     self.dataSource.events = events
-                    // Переделать:
-                    self.fetchAvatars()
+                    self.getAllAvatars()
                 }
             case .failure(let error):
                 print("Error - \(error)")
@@ -40,36 +35,36 @@ class EventListViewController: UIViewController {
         }
     }
     
-    func fetchEvents() {
-        NetworkManager.fetchEvents(page: 1) { events, error in
-            if let events = events {
-                self.dataSource.events = events
-                self.fetchAvatars()
-            }
-            if error != nil {
-                print(error!)
-            }
-        }
-    }
+//    func fetchEvents() {
+//        NetworkManager.fetchEvents(page: 1) { events, error in
+//            if let events = events {
+//                self.dataSource.events = events
+//                self.fetchAvatars()
+//            }
+//            if error != nil {
+//                print(error!)
+//            }
+//        }
+//    }
 
-    func fetchAvatars() {
-        for i in 0..<self.dataSource.events.count {
-            guard let avatarUrl = self.dataSource.events[i].author?.avatarUrl else {
-                return
-            }
-            NetworkManager.downloadImageData(imageUrl: avatarUrl) { imageData, error in
-                guard let imageData = imageData else {
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self.dataSource.events[i].avatarImage = imageData
-                    self.eventListContentView.tableView.reloadData()
-                }
-            }
-        }
-        return
-    }
+//    func fetchAvatars() {
+//        for i in 0..<self.dataSource.events.count {
+//            guard let avatarUrl = self.dataSource.events[i].author?.avatarUrl else {
+//                return
+//            }
+//            NetworkManager.downloadImageData(imageUrl: avatarUrl) { imageData, error in
+//                guard let imageData = imageData else {
+//                    return
+//                }
+//                
+//                DispatchQueue.main.async {
+//                    self.dataSource.events[i].avatarImage = imageData
+//                    self.eventListContentView.tableView.reloadData()
+//                }
+//            }
+//        }
+//        return
+//    }
         
     func setUpNavigation() {
         self.navigationItem.title = "Table of events"
@@ -77,6 +72,7 @@ class EventListViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDelegate
 extension EventListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -103,6 +99,21 @@ extension EventListViewController {
     }
     
     func getAllAvatars() {
-        
+        for i in 0..<self.dataSource.events.count {
+            guard let imageUrl = self.dataSource.events[i].author?.avatarUrl else {
+                return
+            }
+            AF.download(imageUrl).validate().responseData { response in
+                switch response.result {
+                case .failure(let error):
+                    print("Error while fetching the image: \(error)")
+                case .success(let imageData):
+                    DispatchQueue.main.async {
+                        self.dataSource.events[i].avatarImage = imageData
+                        self.eventListContentView.tableView.reloadData()
+                    }
+                }
+            }
+        }
     }
 }
