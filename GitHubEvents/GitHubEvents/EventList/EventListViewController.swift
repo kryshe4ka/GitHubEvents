@@ -68,7 +68,7 @@ extension EventListViewController {
     }
     
     func getAllAvatars() {
-        for i in 0..<self.dataSource.events.count {
+        DispatchQueue.concurrentPerform(iterations: self.dataSource.events.count, execute: { i in
             guard let imageUrl = self.dataSource.events[i].author?.avatarUrl else {
                 return
             }
@@ -84,6 +84,6 @@ extension EventListViewController {
                     }
                 }
             }
-        }
+        })
     }
 }

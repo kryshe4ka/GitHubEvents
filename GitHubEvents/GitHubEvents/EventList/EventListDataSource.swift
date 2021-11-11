@@ -57,7 +57,7 @@ class EventListDataSource: NSObject, UITableViewDataSource {
     }
     
     func fetchAvatars(_ tableView: UITableView) {
-        for i in 0..<self.events.count {
+        DispatchQueue.concurrentPerform(iterations: self.events.count, execute: { i in
             guard let imageUrl = self.events[i].author?.avatarUrl else {
                 return
             }
@@ -73,6 +73,6 @@ class EventListDataSource: NSObject, UITableViewDataSource {
                     }
                 }
             }
-        }
+        })
     }
 }
