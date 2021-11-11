@@ -12,6 +12,7 @@ class EventListViewController: UIViewController {
 
     var eventListContentView = EventListContentView()
     var dataSource = EventListDataSource()
+    let operationQueue = OperationQueue()
     
     override func loadView() {
         view = eventListContentView
@@ -22,17 +23,33 @@ class EventListViewController: UIViewController {
         eventListContentView.tableView.dataSource = dataSource
         eventListContentView.tableView.delegate = self
         setUpNavigation()
-        getAllEvents(page: 1) { [weak self] result in
-            switch result {
-            case .success(let events):
-                if let self = self {
-                    self.dataSource.events = events
-                    self.getAllAvatars()
+        
+    // ресурсозатратная операция? вроде да, но я не вижу разницы в результате, если делать с operationQueue
+        operationQueue.addOperation { [weak self] in
+            guard let self = self else {return}
+            self.getAllEvents(page: 1) { [weak self] result in
+                switch result {
+                case .success(let events):
+                    if let self = self {
+                        self.dataSource.events = events
+                        self.getAllAvatars()
+                    }
+                case .failure(let error):
+                    print("Error - \(error)")
                 }
-            case .failure(let error):
-                print("Error - \(error)")
             }
         }
+//        getAllEvents(page: 1) { [weak self] result in
+//            switch result {
+//            case .success(let events):
+//                if let self = self {
+//                    self.dataSource.events = events
+//                    self.getAllAvatars()
+//                }
+//            case .failure(let error):
+//                print("Error - \(error)")
+//            }
+//        }
     }
         
     func setUpNavigation() {
