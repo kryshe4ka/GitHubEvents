@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct Event: Codable {
+public struct Event: Codable {
     struct Actor: Codable {
         let authorName: String?
         let avatarUrl: String?

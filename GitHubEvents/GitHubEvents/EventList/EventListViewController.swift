@@ -7,15 +7,94 @@
 
 import UIKit
 import Alamofire
+import Foundation
+
+public func getAllEvents(page: Int, completion: @escaping (Result<[Event], Error>) -> Void) {
+    NetworkClient.request(EventsRouter.events(page)).responseDecodable(of: [Event].self) { response in
+        switch response.result {
+        case .success(let events):
+            completion(.success(events))
+        case .failure(let error):
+            completion(.failure(error))
+        }
+    }
+}
+public func getAllAvatars(events: [Event]) {
+    var imagesDataArray: [Data] = []
+    DispatchQueue.concurrentPerform(iterations: events.count, execute: { i in
+        guard let imageUrl = events[i].author?.avatarUrl else {
+            return
+        }
+        NetworkClient.download(imageUrl).responseData { response in
+            switch response.result {
+            case .failure(let error):
+                print("Error while fetching the image: \(error)")
+            case .success(let imageData):
+                imagesDataArray.append(imageData)
+                print("картинка номер \(i)")
+//                    DispatchQueue.main.async { [weak self] in
+//                        guard let self = self else { return }
+//                        self.dataSource.events[i].avatarImage = imageData
+//                        self.eventListContentView.tableView.reloadData()
+//                    }
+            }
+        }
+    })
+}
+
+class GetEventsOperation: AsynchronousOperation {
+    let page: Int
+    var result: Result<[Event], Error>?
+
+    init(page: Int) {
+        self.page = page
+        super.init()
+    }
+    override func main() {
+        getAllEvents(page: page) { result in
+            self.result = result
+            self.state = .finished
+        }
+    }
+}
+
+class SecondOperation: AsynchronousOperation {
+    
+}
+
+
 
 class EventListViewController: UIViewController {
-
+    
     var eventListContentView = EventListContentView()
     var dataSource = EventListDataSource()
     let operationQueue = OperationQueue()
     var page = 1
     let group = DispatchGroup()
     let queue = DispatchQueue(label: "test")
+    
+    
+    
+    func getEvents() {
+        let operation = GetEventsOperation(page: page)
+        operation.completionBlock = { [weak self] in
+            guard let result = operation.result else { return }
+            switch result {
+            case .success(let events):
+                if let self = self {
+                    self.dataSource.events = events
+                    print("event count = \(self.dataSource.events.count)")
+//                    self.getAllAvatars()
+                }
+            case .failure(let error):
+                print("Error - \(error)")
+            }
+        }
+//        operation.start()
+        operationQueue.addOperation(operation)
+    }
+    
+    
     
     override func loadView() {
         view = eventListContentView
@@ -27,8 +106,13 @@ class EventListViewController: UIViewController {
         eventListContentView.tableView.delegate = self
         setUpNavigation()
         
+        getEvents()
+        
+        
 //        loadPageWithEvents()
-        testWithDispatchGroup()
+//        testWithDispatchGroup()
+        
+        
         
     }
         
@@ -66,17 +150,20 @@ extension EventListViewController {
     
     func getAllAvatars() {
         print("начал работать getAllAvatars")
+        
         DispatchQueue.concurrentPerform(iterations: self.dataSource.events.count, execute: { i in
             guard let imageUrl = self.dataSource.events[i].author?.avatarUrl else {
                 return
             }
             NetworkClient.download(imageUrl).responseData { response in
+                self.group.enter()
                 switch response.result {
                 case .failure(let error):
                     print("Error while fetching the image: \(error)")
                 case .success(let imageData):
                     self.dataSource.events[i].avatarImage = imageData
                     print("картинка номер \(i)")
+                    self.group.leave()
 //                    DispatchQueue.main.async { [weak self] in
 //                        guard let self = self else { return }
 //                        self.dataSource.events[i].avatarImage = imageData
@@ -85,25 +172,9 @@ extension EventListViewController {
                 }
             }
         })
-        
     }
     
-    func getEvents() {
-        print("начал работать getEvents")
-        self.getAllEvents(page: self.page) { [weak self] result in
-            switch result {
-            case .success(let events):
-                if let self = self {
-                    self.dataSource.events = events
-                    print("event count = \(self.dataSource.events.count)")
-                    // так как getAvatars не работает, то пока что вызов getAllAvatars отсюда
-                    self.getAllAvatars()
-                }
-            case .failure(let error):
-                print("Error - \(error)")
-            }
-        }
-    }
+
     func getAvatars() {
         if self.dataSource.events.count > 0 {
             self.getAllAvatars()
@@ -141,12 +212,10 @@ extension EventListViewController {
         group.enter()
         queue.sync {
             self.getEvents()
-            self.group.leave()
         }
         group.enter()
         queue.sync {
             self.getAvatars()
-            self.group.leave()
         }
         group.wait()
         group.notify(queue: DispatchQueue.main) {
