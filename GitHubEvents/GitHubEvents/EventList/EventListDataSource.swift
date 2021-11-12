@@ -11,6 +11,7 @@ class EventListDataSource: NSObject, UITableViewDataSource {
     
     var events: [Event] = []
     let pageMAX = 10
+    let group = DispatchGroup()
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return events.count
@@ -32,27 +33,22 @@ class EventListDataSource: NSObject, UITableViewDataSource {
     
     func loadMore(_ tableView: UITableView) {
         page += 1
-        fetchEvents(page: page) { [weak self] result in
+        group.enter()
+        getAllEvents(page: page) { [weak self] result in
+            guard let self = self else {return}
             switch result {
             case .success(let events):
-                if let self = self {
-                    self.events.append(contentsOf: events)
-                    self.fetchAvatars(tableView)
-                }
+                self.events.append(contentsOf: events)
+                self.fetchAvatars(tableView)
+                self.group.leave()
             case .failure(let error):
                 print("Error - \(error)")
+                self.group.leave()
             }
         }
-    }
-    
-    func fetchEvents(page: Int, completion: @escaping (Result<[Event], Error>) -> Void) {
-        NetworkClient.request(EventsRouter.events(page)).responseDecodable(of: [Event].self) { response in
-            switch response.result {
-            case .success(let events):
-                completion(.success(events))
-            case .failure(let error):
-                completion(.failure(error))
-            }
+        group.notify(queue: .main) {
+            print("Finished all upload requests.")
+            tableView.reloadData()
         }
     }
     
@@ -61,16 +57,14 @@ class EventListDataSource: NSObject, UITableViewDataSource {
             guard let imageUrl = self.events[i].author?.avatarUrl else {
                 return
             }
+            self.group.enter()
             NetworkClient.download(imageUrl).responseData { response in
                 switch response.result {
                 case .failure(let error):
                     print("Error while fetching the image: \(error)")
                 case .success(let imageData):
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        self.events[i].avatarImage = imageData
-                        tableView.reloadData()
-                    }
+                    self.events[i].avatarImage = imageData
+                    self.group.leave()
                 }
             }
         })

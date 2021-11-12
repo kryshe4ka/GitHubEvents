@@ -9,8 +9,6 @@ import Foundation
 
 open class AsynchronousOperation: Operation {
 
-//    let queue = DispatchQueue(label: "test")
-
     public override var isReady: Bool {
         return super.isReady && state == .ready
     }
