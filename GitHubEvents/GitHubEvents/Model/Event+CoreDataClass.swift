@@ -9,4 +9,6 @@ import Foundation
 import CoreData
 
 @objc(CoreDataEvent)
-public class CoreDataEvent: NSManagedObject {}
+public class CoreDataEvent: NSManagedObject {
+    
+}

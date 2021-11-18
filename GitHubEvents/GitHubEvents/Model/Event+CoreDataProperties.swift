@@ -11,7 +11,7 @@ import CoreData
 
 extension CoreDataEvent {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CoreDataEvent> {
-        return NSFetchRequest<CoreDataEvent>(entityName: "Event")
+        return NSFetchRequest<CoreDataEvent>(entityName: "CoreDataEvent")
     }
   
     @NSManaged public var type: String?
