@@ -10,7 +10,6 @@ class EventListDataSource: NSObject, UITableViewDataSource {
     
     var events: [Event] = []
     let pageMAX = 10
-    let group = DispatchGroup()
     var page = 1
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
