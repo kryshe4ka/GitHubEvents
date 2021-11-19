@@ -10,9 +10,7 @@ import Foundation
 import CoreData
 
 class EventListViewController: UIViewController, NSFetchedResultsControllerDelegate {
-    
-    var storageContext: CoreDataStorageContext!
-    
+        
     var eventListContentView = EventListContentView()
     var dataSource = EventListDataSource()
     var page = 1
@@ -31,40 +29,34 @@ class EventListViewController: UIViewController, NSFetchedResultsControllerDeleg
         eventListContentView.tableView.dataSource = dataSource
         eventListContentView.tableView.delegate = self
         setUpNavigation()
-        self.dataSource.storageContext = self.storageContext
-        
-        do {
-            try storageContext.fetch()
-//            self.eventListContentView.tableView.reloadData()
-        } catch {
-          fatalError("Core Data fetch error")
-        }
+
+        getEventsFromStorage()
 
         NetworkClient.getEvents(page: page, tableView: self.eventListContentView.tableView) { [weak self] events in
             guard let self = self else { return }
             self.dataSource.events = events
-            self.saveEventsInStorageContext(events: events)
+            self.saveEventsInStorage(events: events)
         }
     }
     
-    func saveEventsInStorageContext(events: [Event]) {
-        var storableObjects: [Storable] = []
-        for event in events {
-            let newEvent = self.storageContext.create()
-            if var newEvent = newEvent {
-                newEvent.type = event.type
-                newEvent.date = event.date
-                newEvent.avatarUrl = event.author?.avatarUrl
-                newEvent.authorName = event.author?.authorName
-                newEvent.repo = event.repo.name
-                newEvent.avatarImage = event.avatarImage
-                storableObjects.append(newEvent)
+    func getEventsFromStorage() {
+        do {
+            try CoreDataClient.fetchEvents { events in
+                self.dataSource.events = events
             }
+        } catch {
+            fatalError("Core Data fetch error")
+        }
+    }
+    
+    func saveEventsInStorage(events: [Storable]) {
+        for event in events {
+            CoreDataClient.createEvent(fromEvent: event)
         }
         do {
-            try self.storageContext.saveAll(objects: storableObjects)
+            try CoreDataClient.saveAll()
         } catch {
-          fatalError("Core Data Save error")
+            fatalError("Core Data fetch error")
         }
     }
 }
@@ -77,7 +69,7 @@ extension EventListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let eventDetailsViewController = EventDetailsViewController(event: dataSource.events[indexPath.row])
+        let eventDetailsViewController = EventDetailsViewController(event: dataSource.events[indexPath.row] as! Event)
         self.navigationController?.pushViewController(eventDetailsViewController, animated: true)
     }
 }

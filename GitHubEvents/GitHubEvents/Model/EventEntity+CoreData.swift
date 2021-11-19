@@ -21,6 +21,7 @@ extension EventEntity: Storable {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<EventEntity> {
         return NSFetchRequest<EventEntity>(entityName: "EventEntity")
     }
+    
     @NSManaged public var type: String?
     @NSManaged public var repo: String?
     @NSManaged public var date: String?

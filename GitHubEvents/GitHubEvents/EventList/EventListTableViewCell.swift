@@ -9,25 +9,45 @@ import UIKit
 
 class EventListTableViewCell: UITableViewCell {
     
-    var event:Event? {
-            didSet {
-                guard let eventItem = event else {return}
-                if let type = eventItem.type {
-                    eventType.text = type
-                }
-                if let date = eventItem.date {
-                    eventDate.text = date
-                }
-                if let author = eventItem.author {
-                    if let name = author.authorName {
-                        authorName.text = name
-                    }
-                }
-                if let imageData = eventItem.avatarImage {
-                    authorImage.image = UIImage(data: imageData)
+    var event: Storable? {
+        didSet {
+            guard let eventItem = event as? Event else {return}
+            if let type = eventItem.type {
+                eventType.text = type
+            }
+            if let date = eventItem.date {
+                eventDate.text = date
+            }
+            if let author = eventItem.author {
+                if let name = author.authorName {
+                    authorName.text = name
                 }
             }
-    }
+            if let imageData = eventItem.avatarImage {
+                authorImage.image = UIImage(data: imageData)
+            }
+        }
+}
+    
+//    var event:Event? {
+//            didSet {
+//                guard let eventItem = event else {return}
+//                if let type = eventItem.type {
+//                    eventType.text = type
+//                }
+//                if let date = eventItem.date {
+//                    eventDate.text = date
+//                }
+//                if let author = eventItem.author {
+//                    if let name = author.authorName {
+//                        authorName.text = name
+//                    }
+//                }
+//                if let imageData = eventItem.avatarImage {
+//                    authorImage.image = UIImage(data: imageData)
+//                }
+//            }
+//    }
     
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
