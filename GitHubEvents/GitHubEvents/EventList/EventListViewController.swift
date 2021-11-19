@@ -10,19 +10,8 @@ import Foundation
 import CoreData
 
 class EventListViewController: UIViewController, NSFetchedResultsControllerDelegate {
-    var context: NSManagedObjectContext?
     
-    private lazy var fetchedResultsController: NSFetchedResultsController<CoreDataEvent> = {
-      let fetchRequest: NSFetchRequest<CoreDataEvent> = CoreDataEvent.fetchRequest()
-//      fetchRequest.fetchLimit = 20
-      
-      let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
-      fetchRequest.sortDescriptors = [sortDescriptor]
-      
-      let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.context!, sectionNameKeyPath: nil, cacheName: nil)
-      frc.delegate = self
-      return frc
-    }()
+    var storageContext: CoreDataStorageContext!
     
     var eventListContentView = EventListContentView()
     var dataSource = EventListDataSource()
@@ -42,34 +31,38 @@ class EventListViewController: UIViewController, NSFetchedResultsControllerDeleg
         eventListContentView.tableView.dataSource = dataSource
         eventListContentView.tableView.delegate = self
         setUpNavigation()
+        self.dataSource.storageContext = self.storageContext
         
-//        do {
-//          try fetchedResultsController.performFetch()
+        do {
+            try storageContext.fetch()
 //            self.eventListContentView.tableView.reloadData()
-//        } catch {
-//          fatalError("Core Data fetch error")
-//        }
+        } catch {
+          fatalError("Core Data fetch error")
+        }
 
         NetworkClient.getEvents(page: page, tableView: self.eventListContentView.tableView) { [weak self] events in
             guard let self = self else { return }
             self.dataSource.events = events
-            
-            self.saveEventsInCoreData(events: events)
+            self.saveEventsInStorageContext(events: events)
         }
     }
     
-    func saveEventsInCoreData(events: [Event]) {
-        guard let context = self.context else { return }
+    func saveEventsInStorageContext(events: [Event]) {
+        var storableObjects: [Storable] = []
         for event in events {
-            let newEvent = CoreDataEvent(context: context)
-            newEvent.type = event.type
-            newEvent.date = event.date
-            newEvent.avatarUrl = event.author?.avatarUrl
-            newEvent.authorName = event.author?.authorName
-            newEvent.repo = event.repo.name
+            let newEvent = self.storageContext.create()
+            if var newEvent = newEvent {
+                newEvent.type = event.type
+                newEvent.date = event.date
+                newEvent.avatarUrl = event.author?.avatarUrl
+                newEvent.authorName = event.author?.authorName
+                newEvent.repo = event.repo.name
+                newEvent.avatarImage = event.avatarImage
+                storableObjects.append(newEvent)
+            }
         }
         do {
-          try context.save()
+            try self.storageContext.saveAll(objects: storableObjects)
         } catch {
           fatalError("Core Data Save error")
         }
