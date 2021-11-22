@@ -8,9 +8,14 @@
 import Foundation
 import UIKit
 
+struct EventDetailsState {
+    let authorImageData: Data?
+    let repo: String
+    let authorName: String
+}
+
 class EventDetailsContentView: UIView {
     
-    var event: Event?
     var imageHeightConstraitCompact = NSLayoutConstraint()
     var imageHeightConstraitRegular = NSLayoutConstraint()
     var imageTopConstraitCompact = NSLayoutConstraint()
@@ -45,20 +50,8 @@ class EventDetailsContentView: UIView {
         return repo
     }()
     
-    init(event: Event) {
+    init() {
         super.init(frame: .zero)
-        self.event = event
-        if let imageData = event.avatarImage {
-            authorImage.image = UIImage(data: imageData)
-        }
-        if let author = event.author {
-            if let name = author.authorName {
-                authorName.text = "Author: " + name
-            }
-        }
-        if let repoName = event.repo.name {
-            repo.text = "Repo: " + repoName
-        }
         createSubviews()
     }
     
@@ -73,7 +66,6 @@ class EventDetailsContentView: UIView {
         addSubview(authorName)
         addSubview(repo)
         addConstraints()
-        
         imageHeightConstraitCompact = authorImage.heightAnchor.constraint(equalToConstant: 180)
         imageHeightConstraitRegular = authorImage.heightAnchor.constraint(equalToConstant: 310)
         imageTopConstraitCompact = authorImage.topAnchor.constraint(equalTo: topAnchor, constant: 40)
@@ -90,7 +82,6 @@ class EventDetailsContentView: UIView {
         imageHeightConstraitRegular.isActive = true
         imageTopConstraitCompact.isActive = false
         imageTopConstraitRegular.isActive = true
-
     }
     
     func activateConstraitsForCompact() {
@@ -111,5 +102,15 @@ class EventDetailsContentView: UIView {
             authorName.topAnchor.constraint(equalTo: repo.bottomAnchor, constant: 20),
             authorName.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
+    }
+    
+    func update(state: EventDetailsState) {
+        repo.text = "Repo: " + state.repo
+        authorName.text = "Author: " + state.authorName
+        if let imageData = state.authorImageData {
+            authorImage.image = UIImage(data: imageData)
+        } else {
+            authorImage.image = UIImage(named: "Portrait_Placeholder")
+        }
     }
 }

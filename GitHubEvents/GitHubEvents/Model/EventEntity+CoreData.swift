@@ -14,10 +14,6 @@ import CoreData
 
 @objc(EventEntity)
 public class EventEntity: NSManagedObject {
-
-}
-
-extension EventEntity: Storable {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<EventEntity> {
         return NSFetchRequest<EventEntity>(entityName: "EventEntity")
     }

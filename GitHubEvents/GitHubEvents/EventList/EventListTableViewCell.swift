@@ -7,48 +7,14 @@
 
 import UIKit
 
-class EventListTableViewCell: UITableViewCell {
-    
-    var event: Storable? {
-        didSet {
-            guard let eventItem = event as? Event else {return}
-            if let type = eventItem.type {
-                eventType.text = type
-            }
-            if let date = eventItem.date {
-                eventDate.text = date
-            }
-            if let author = eventItem.author {
-                if let name = author.authorName {
-                    authorName.text = name
-                }
-            }
-            if let imageData = eventItem.avatarImage {
-                authorImage.image = UIImage(data: imageData)
-            }
-        }
+struct CellState {
+    let authorImageData: Data?
+    let date: String
+    let type: String
+    let authorName: String
 }
-    
-//    var event:Event? {
-//            didSet {
-//                guard let eventItem = event else {return}
-//                if let type = eventItem.type {
-//                    eventType.text = type
-//                }
-//                if let date = eventItem.date {
-//                    eventDate.text = date
-//                }
-//                if let author = eventItem.author {
-//                    if let name = author.authorName {
-//                        authorName.text = name
-//                    }
-//                }
-//                if let imageData = eventItem.avatarImage {
-//                    authorImage.image = UIImage(data: imageData)
-//                }
-//            }
-//    }
-    
+
+class EventListTableViewCell: UITableViewCell {
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
         authorImage.contentMode = .scaleAspectFill
@@ -127,5 +93,16 @@ class EventListTableViewCell: UITableViewCell {
             eventDate.bottomAnchor.constraint(equalTo:self.containerView.bottomAnchor),
             eventDate.leadingAnchor.constraint(equalTo:self.containerView.leadingAnchor),
         ])
+    }
+    
+    func update(state: CellState) {
+        eventType.text = state.type
+        eventDate.text = state.date
+        authorName.text = state.authorName
+        if let imageData = state.authorImageData {
+            authorImage.image = UIImage(data: imageData)
+        } else {
+            authorImage.image = UIImage(named: "Portrait_Placeholder")
+        }
     }
 }

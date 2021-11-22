@@ -25,7 +25,6 @@
 		3DC02A0B27462906002F0028 /* Events.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A0927462906002F0028 /* Events.xcdatamodeld */; };
 		3DC02A0D27462BBF002F0028 /* EventEntity+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A0C27462BBF002F0028 /* EventEntity+CoreData.swift */; };
 		3DC02A1127464527002F0028 /* StorageManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A1027464527002F0028 /* StorageManagerProtocol.swift */; };
-		3DC02A1527465A45002F0028 /* StorableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A1427465A45002F0028 /* StorableProtocol.swift */; };
 		3DC02A2427479223002F0028 /* CoreDataClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A2327479223002F0028 /* CoreDataClient.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,7 +48,6 @@
 		3DC02A0A27462906002F0028 /* Events.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Events.xcdatamodel; sourceTree = "<group>"; };
 		3DC02A0C27462BBF002F0028 /* EventEntity+CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventEntity+CoreData.swift"; sourceTree = "<group>"; };
 		3DC02A1027464527002F0028 /* StorageManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManagerProtocol.swift; sourceTree = "<group>"; };
-		3DC02A1427465A45002F0028 /* StorableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorableProtocol.swift; sourceTree = "<group>"; };
 		3DC02A2327479223002F0028 /* CoreDataClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,7 +147,6 @@
 		3DC02A222747919C002F0028 /* StorageManager */ = {
 			isa = PBXGroup;
 			children = (
-				3DC02A1427465A45002F0028 /* StorableProtocol.swift */,
 				3DC02A1027464527002F0028 /* StorageManagerProtocol.swift */,
 				3DC02A2327479223002F0028 /* CoreDataClient.swift */,
 			);
@@ -243,7 +240,6 @@
 				3D7D9FE8273A3FB3009DA1EF /* EventsRouter.swift in Sources */,
 				3DC02A0D27462BBF002F0028 /* EventEntity+CoreData.swift in Sources */,
 				3D7D9FCA2733EC9F009DA1EF /* EventDetailsViewController.swift in Sources */,
-				3DC02A1527465A45002F0028 /* StorableProtocol.swift in Sources */,
 				3D7D9FC12732B64F009DA1EF /* Event.swift in Sources */,
 				3DC02A0B27462906002F0028 /* Events.xcdatamodeld in Sources */,
 				3D7D9FA9273272D3009DA1EF /* SceneDelegate.swift in Sources */,

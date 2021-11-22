@@ -59,20 +59,9 @@ extension NetworkClient {
             }
         }
         group.notify(queue: .main) {
-            
-            CoreDataClient.deleteAll()
-            
-            for event in eventsWithAvatars {
-                CoreDataClient.createEvent(fromEvent: event)
-            }
-            do {
-                try CoreDataClient.saveAll()
-            } catch {
-                fatalError("Core Data fetch error")
-            }
-            
+            deleteEventsFromStorage()
+            saveEventsInStorage(events: eventsWithAvatars)
             completion(eventsWithAvatars)
-            
             print("Finished all upload requests.")
             tableView.reloadData()
         }

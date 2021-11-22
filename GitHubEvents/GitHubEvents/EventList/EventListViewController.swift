@@ -19,44 +19,35 @@ class EventListViewController: UIViewController, NSFetchedResultsControllerDeleg
         view = eventListContentView
     }
     
-    func setUpNavigation() {
-        self.navigationItem.title = "Table of events"
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red]
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         eventListContentView.tableView.dataSource = dataSource
         eventListContentView.tableView.delegate = self
         setUpNavigation()
-
         getEventsFromStorage()
-
-        NetworkClient.getEvents(page: page, tableView: self.eventListContentView.tableView) { [weak self] events in
-            guard let self = self else { return }
-            self.dataSource.events = events
-            self.saveEventsInStorage(events: events)
-        }
+        getNetworkEvents()
+    }
+    
+    func setUpNavigation() {
+        self.navigationItem.title = "Table of events"
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red]
     }
     
     func getEventsFromStorage() {
-        do {
-            try CoreDataClient.fetchEvents { events in
+        CoreDataClient.fetchEvents { result in
+            switch result {
+            case .success(let events):
                 self.dataSource.events = events
+            case .failure(let error):
+                print(error)
             }
-        } catch {
-            fatalError("Core Data fetch error")
         }
     }
     
-    func saveEventsInStorage(events: [Storable]) {
-        for event in events {
-            CoreDataClient.createEvent(fromEvent: event)
-        }
-        do {
-            try CoreDataClient.saveAll()
-        } catch {
-            fatalError("Core Data fetch error")
+    func getNetworkEvents() {
+        NetworkClient.getEvents(page: page, tableView: self.eventListContentView.tableView) { [weak self] events in
+            guard let self = self else { return }
+            self.dataSource.events = events
         }
     }
 }
@@ -69,7 +60,9 @@ extension EventListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let eventDetailsViewController = EventDetailsViewController(event: dataSource.events[indexPath.row] as! Event)
+        let event = dataSource.events[indexPath.row]
+        let eventDetails = EventDetailsState(authorImageData: event.avatarImage, repo: event.repo.name ?? "", authorName: event.author?.authorName ?? "")
+        let eventDetailsViewController = EventDetailsViewController(eventDetails: eventDetails)
         self.navigationController?.pushViewController(eventDetailsViewController, animated: true)
     }
 }

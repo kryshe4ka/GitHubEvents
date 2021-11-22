@@ -9,7 +9,7 @@ import CoreData
 
 class EventListDataSource: NSObject, UITableViewDataSource {
         
-    var events: [Storable] = []
+    var events: [Event] = []
     let pageMAX = 10
     var page = 1
 
@@ -21,8 +21,10 @@ class EventListDataSource: NSObject, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as? EventListTableViewCell else {
             return UITableViewCell()
         }
-        cell.event = self.events[indexPath.row]
-
+        let event = self.events[indexPath.row]
+        let state = CellState(authorImageData: event.avatarImage, date: event.date ?? "", type: event.type ?? "", authorName: event.author?.authorName ?? "")
+        cell.update(state: state)
+        
         // Check if the last row number is the same as the last current data element
         if indexPath.row == self.events.count - 1 && page <= pageMAX {
             self.loadMore(tableView)

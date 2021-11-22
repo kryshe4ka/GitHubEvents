@@ -10,11 +10,10 @@ import CoreData
 import UIKit
 
 class CoreDataClient: StorageManager {
-    
     static let shared = CoreDataClient()
     var managedContext: NSManagedObjectContext?
     var fetchedResultsController: NSFetchedResultsController<EventEntity>?
-
+    
     init() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         self.managedContext = appDelegate.persistentContainer.viewContext
@@ -27,62 +26,88 @@ class CoreDataClient: StorageManager {
         }()
     }
     
-    static func fetchEvents(completion: @escaping ([Storable]) -> Void ) throws {
-        print("fetchEvents")
+    private func convertFromDBEntityToEvents(fetchedObjects: [EventEntity]) -> [Event] {
+        var events: [Event] = []
+        for object in fetchedObjects {
+            let event = Event(author: Event.Actor(authorName: object.authorName, avatarUrl: object.avatarUrl), repo: Event.Repo(name: object.repo), type: object.type, date: object.date, avatarImage: object.avatarImage)
+            events.append(event)
+        }
+        return events
+    }
+    
+    static func fetchEvents(completion: @escaping (Result<[Event], StorageError>) -> Void) {
         do {
             try shared.fetchedResultsController?.performFetch()
-            let fetchedObjects = shared.fetchedResultsController?.fetchedObjects
-            completion(shared.convertFromDBEntityToStorable(fetchedObjects: fetchedObjects ?? []))
+            guard let fetchedObjects = shared.fetchedResultsController?.fetchedObjects else { return }
+            let events = shared.convertFromDBEntityToEvents(fetchedObjects: fetchedObjects)
+            completion(.success(events))
         } catch {
-            fatalError("Core Data fetch error")
+            completion(.failure(.fetchError))
         }
     }
     
-    private func convertFromDBEntityToStorable(fetchedObjects: [EventEntity]) -> [Storable] {
-        var array: [Storable] = []
-        for obj in fetchedObjects {
-            let event = Event(author: Event.Actor(authorName: obj.authorName, avatarUrl: obj.avatarUrl), repo: Event.Repo(name: obj.repo), type: obj.type, date: obj.date, avatarImage: obj.avatarImage)
-            array.append(event)
+    static func saveEvents(_ events: [Event], completion: @escaping (Result<Bool, StorageError>) -> Void) {
+        guard let context = shared.managedContext else {
+            completion(.failure(.error))
+            return
         }
-        return array
-    }
-    
-    static func createEvent(fromEvent: Storable) -> Storable? {
-        guard let event = fromEvent as? Event else { return nil }
-        guard let context = shared.managedContext else { return nil }
-
-        let newEvent = EventEntity(context: context)
-        newEvent.avatarImage = event.avatarImage
-        newEvent.repo = event.repo.name
-        newEvent.avatarUrl = event.author?.avatarUrl
-        newEvent.authorName = event.author?.authorName
-        newEvent.avatarImage = event.avatarImage
-        newEvent.type = event.type
-        newEvent.date = event.date
-        return newEvent
-    }
-    
-    static func saveAll() throws {
-        print("saveEvents")
+        for event in events {
+            let newEventEntity = EventEntity(context: context)
+            newEventEntity.avatarImage = event.avatarImage
+            newEventEntity.repo = event.repo.name
+            newEventEntity.avatarUrl = event.author?.avatarUrl
+            newEventEntity.authorName = event.author?.authorName
+            newEventEntity.avatarImage = event.avatarImage
+            newEventEntity.type = event.type
+            newEventEntity.date = event.date
+        }
         do {
             try shared.managedContext?.save()
+            completion(.success(true))
         } catch {
-            fatalError("CoreData error")
+            completion(.failure(.saveError))
         }
     }
     
-    static func deleteAll()
-        {
-            let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "EventEntity")
-            let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
-            do
-            {
-                try shared.managedContext?.execute(deleteRequest)
-                try shared.managedContext?.save()
-            }
-            catch
-            {
-                print ("There was an error")
-            }
+    static func saveAll(completion: @escaping (Result<Bool, StorageError>) -> Void) {
+        do {
+            try shared.managedContext?.save()
+            completion(.success(true))
+        } catch {
+            completion(.failure(.saveError))
         }
+    }
+    
+    static func deleteAll(completion: @escaping (Result<Bool, StorageError>) -> Void) {
+        let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "EventEntity")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+        do {
+            try shared.managedContext?.execute(deleteRequest)
+            try shared.managedContext?.save()
+            completion(.success(true))
+        } catch {
+            completion(.failure(.deleteError))
+        }
+    }
+}
+
+public func deleteEventsFromStorage() {
+    CoreDataClient.deleteAll() { result in
+        switch result {
+        case .failure(let error):
+            print(error)
+        case .success(_):
+            print("Success deleting")
+        }
+    }
+}
+public func saveEventsInStorage(events: [Event]) {
+    CoreDataClient.saveEvents(events) { result in
+        switch result {
+        case .failure(let error):
+            print(error)
+        case .success(_):
+            print("Success saving")
+        }
+    }
 }

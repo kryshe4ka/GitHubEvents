@@ -41,5 +41,4 @@ class EventListContentView: UIView {
             tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor)
         ])
     }
-    
 }

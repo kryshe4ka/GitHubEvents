@@ -10,10 +10,12 @@ import UIKit
 class EventDetailsViewController: UIViewController {
 
     var eventDetailsContentView: EventDetailsContentView!
+    let eventDetails: EventDetailsState
     
-    init(event: Event) {
+    init(eventDetails: EventDetailsState) {
+        self.eventDetails = eventDetails
+        self.eventDetailsContentView = EventDetailsContentView()
         super.init(nibName: nil, bundle: nil)
-        self.eventDetailsContentView = EventDetailsContentView(event: event)
     }
     
     required init?(coder: NSCoder) {
@@ -26,6 +28,11 @@ class EventDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setup()
+    }
+    
+    private func setup() {
+        eventDetailsContentView.update(state: eventDetails)
     }
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
