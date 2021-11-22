@@ -9,7 +9,7 @@ import Alamofire
 import Foundation
 import CoreData
 
-class EventListViewController: UIViewController, NSFetchedResultsControllerDelegate {
+class EventListViewController: UIViewController {
         
     var eventListContentView = EventListContentView()
     var dataSource = EventListDataSource()
@@ -21,18 +21,23 @@ class EventListViewController: UIViewController, NSFetchedResultsControllerDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        eventListContentView.tableView.dataSource = dataSource
-        eventListContentView.tableView.delegate = self
+        setupContentView()
         setUpNavigation()
         getEventsFromStorage()
         getNetworkEvents()
+    }
+    
+    func setupContentView() {
+        eventListContentView.tableView.dataSource = dataSource
+        eventListContentView.tableView.delegate = self
+        eventListContentView.refreshControl.addTarget(self, action: #selector(self.refreshEventList(_:)), for: .valueChanged)
     }
     
     func setUpNavigation() {
         self.navigationItem.title = "Table of events"
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red]
     }
-    
+
     func getEventsFromStorage() {
         CoreDataClient.fetchEvents { result in
             switch result {
@@ -48,7 +53,12 @@ class EventListViewController: UIViewController, NSFetchedResultsControllerDeleg
         NetworkClient.getEvents(page: page, tableView: self.eventListContentView.tableView) { [weak self] events in
             guard let self = self else { return }
             self.dataSource.events = events
+            self.eventListContentView.refreshControl.endRefreshing()
         }
+    }
+    
+    @objc func refreshEventList(_ sender: AnyObject) {
+        getNetworkEvents()
     }
 }
 

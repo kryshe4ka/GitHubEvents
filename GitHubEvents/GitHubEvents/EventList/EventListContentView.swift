@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 class EventListContentView: UIView {
+    let refreshControl = UIRefreshControl()
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: UITableView.Style.plain)
@@ -31,6 +32,8 @@ class EventListContentView: UIView {
         backgroundColor = .white
         addSubview(tableView)
         addConstrains()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        tableView.addSubview(refreshControl)
     }
     
     func addConstrains() {
