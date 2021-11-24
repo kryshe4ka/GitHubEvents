@@ -11,17 +11,32 @@ import UIKit
 
 class CoreDataClient: StorageManager {
     static let shared = CoreDataClient()
-    var managedContext: NSManagedObjectContext?
+//    var managedContext: NSManagedObjectContext?
     var fetchedResultsController: NSFetchedResultsController<EventEntity>?
+    let modelName = "Events"
+    
+    // MARK: - Core Data stack
+    lazy var persistentContainer: NSPersistentContainer = {
+      let container = NSPersistentContainer(name: "Events")
+      container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        if let error = error as NSError? {
+          fatalError("Unresolved error \(error), \(error.userInfo)")
+        }
+      })
+      return container
+    }()
+    
+    lazy var managedContext: NSManagedObjectContext = {
+      return self.persistentContainer.viewContext
+    }()
+    
     
     init() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        self.managedContext = appDelegate.persistentContainer.viewContext
         self.fetchedResultsController = {
             let fetchRequest: NSFetchRequest<EventEntity> = EventEntity.fetchRequest()
             let sortDescriptor = NSSortDescriptor(key: "date", ascending: true)
             fetchRequest.sortDescriptors = [sortDescriptor]
-            let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedContext!, sectionNameKeyPath: nil, cacheName: nil)
+            let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedContext, sectionNameKeyPath: nil, cacheName: nil)
             return frc
         }()
     }
@@ -47,22 +62,36 @@ class CoreDataClient: StorageManager {
     }
     
     static func saveEvents(_ events: [Event], completion: @escaping (Result<Bool, StorageError>) -> Void) {
-        guard let context = shared.managedContext else {
-            completion(.failure(.error))
-            return
+        // get main context
+        let mainQueueContext = shared.managedContext
+        // get private context
+        let privateChildContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        // make main context as a parent of child
+        privateChildContext.parent = mainQueueContext
+        
+        privateChildContext.perform {
+            for event in events {
+                let newEventEntity = EventEntity(context: privateChildContext)
+                newEventEntity.avatarImage = event.avatarImage
+                newEventEntity.repo = event.repo.name
+                newEventEntity.avatarUrl = event.author?.avatarUrl
+                newEventEntity.authorName = event.author?.authorName
+                newEventEntity.avatarImage = event.avatarImage
+                newEventEntity.type = event.type
+                newEventEntity.date = event.date
+            }
         }
-        for event in events {
-            let newEventEntity = EventEntity(context: context)
-            newEventEntity.avatarImage = event.avatarImage
-            newEventEntity.repo = event.repo.name
-            newEventEntity.avatarUrl = event.author?.avatarUrl
-            newEventEntity.authorName = event.author?.authorName
-            newEventEntity.avatarImage = event.avatarImage
-            newEventEntity.type = event.type
-            newEventEntity.date = event.date
+        // merge changes to main context
+        privateChildContext.perform {
+            do {
+                try privateChildContext.save()
+            } catch {
+                completion(.failure(.saveError))
+            }
         }
+        
         do {
-            try shared.managedContext?.save()
+            try mainQueueContext.save()
             completion(.success(true))
         } catch {
             completion(.failure(.saveError))
@@ -71,7 +100,7 @@ class CoreDataClient: StorageManager {
     
     static func saveAll(completion: @escaping (Result<Bool, StorageError>) -> Void) {
         do {
-            try shared.managedContext?.save()
+            try shared.managedContext.save()
             completion(.success(true))
         } catch {
             completion(.failure(.saveError))
@@ -79,11 +108,21 @@ class CoreDataClient: StorageManager {
     }
     
     static func deleteAll(completion: @escaping (Result<Bool, StorageError>) -> Void) {
+        // get main context
+        let mainQueueContext = shared.managedContext
+        // get private context
+        let privateChildContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        // make main context as a parent of child
+        privateChildContext.parent = mainQueueContext
+        
         let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "EventEntity")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+        
         do {
-            try shared.managedContext?.execute(deleteRequest)
-            try shared.managedContext?.save()
+            try privateChildContext.execute(deleteRequest)
+            // merge changes to main context
+            try privateChildContext.save()
+            try mainQueueContext.save()
             completion(.success(true))
         } catch {
             completion(.failure(.deleteError))
