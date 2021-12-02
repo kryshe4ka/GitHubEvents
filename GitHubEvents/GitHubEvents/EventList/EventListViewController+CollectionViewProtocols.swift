@@ -10,7 +10,6 @@ import UIKit
 extension EventListViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(EventListDataSource.menuTitles.count)
         return EventListDataSource.menuTitles.count
     }
     

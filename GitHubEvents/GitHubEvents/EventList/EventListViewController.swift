@@ -11,7 +11,9 @@ import CoreData
 
 class EventListViewController: UIViewController {
     var eventListContentView = EventListContentView()
-    var dataSource = EventListDataSource()
+//    var dataSource = EventListDataSource()
+    var dataSource = EventListDataSource.shared
+
     var page = 1
         
     override func loadView() {
@@ -51,6 +53,7 @@ class EventListViewController: UIViewController {
             switch result {
             case .success(let events):
                 self.dataSource.events = events
+//                self.dataSource.filterEvents()
             case .failure(let error):
                 print(error)
             }
@@ -61,6 +64,7 @@ class EventListViewController: UIViewController {
         NetworkClient.getEvents(page: page, tableView: self.eventListContentView.tableView) { [weak self] events in
             guard let self = self else { return }
             self.dataSource.events = events
+            self.dataSource.filterEvents()
             self.eventListContentView.refreshControl.endRefreshing()
         }
     }

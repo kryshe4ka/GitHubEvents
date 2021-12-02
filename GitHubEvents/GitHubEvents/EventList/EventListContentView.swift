@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class EventListContentView: UIView {
-    
+    let refreshControl = UIRefreshControl()
     let menuTitles = EventListDataSource.menuTitles
     var indicatorView = UIView()
     let indicatorHeight : CGFloat = 3
@@ -23,8 +23,6 @@ class EventListContentView: UIView {
         menuCollection.translatesAutoresizingMaskIntoConstraints = false
         return menuCollection
     }()
-    
-    let refreshControl = UIRefreshControl()
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: UITableView.Style.plain)
@@ -99,6 +97,12 @@ class EventListContentView: UIView {
     }
     
     func refreshContent(){
+        /// configure events array
+        EventListDataSource.shared.selectedIndex = selectedIndex
+        EventListDataSource.shared.filterEvents()
+        /// refresh table with selected type of events
+        tableView.reloadData()
+        
         let desiredX = (menuCollection.bounds.width / CGFloat(menuTitles.count)) * CGFloat(selectedIndex)
         UIView.animate(withDuration: 0.3) {
              self.indicatorView.frame = CGRect(x: desiredX, y: self.menuCollection.bounds.maxY - self.indicatorHeight, width: self.menuCollection.bounds.width / CGFloat(self.menuTitles.count), height: self.indicatorHeight)
