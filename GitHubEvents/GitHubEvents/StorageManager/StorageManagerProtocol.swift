@@ -19,7 +19,6 @@ protocol StorageManager {
     static func fetchEvents(completion: @escaping (Result<[Event], StorageError>) -> Void )
     static func saveEvents(_ events: [Event], completion: @escaping (Result<Bool, StorageError>) -> Void)
     static func saveAll(completion: @escaping (Result<Bool, StorageError>) -> Void)
-//    static func saveAll()
     static func deleteAll(completion: @escaping (Result<Bool, StorageError>) -> Void)
     
 }

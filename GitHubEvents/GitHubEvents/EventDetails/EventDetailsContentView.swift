@@ -41,8 +41,8 @@ class EventDetailsContentView: UIView {
 
     let repo: UILabel = {
         let repo = UILabel()
-        repo.font = UIFont.monospacedSystemFont(ofSize: 16, weight: .light)
-        repo.textColor =  UIColor.link
+        repo.font = UIFont.systemFont(ofSize: 16)
+        repo.textColor =  UIColor.systemBlue
         repo.translatesAutoresizingMaskIntoConstraints = false
         repo.allowsDefaultTighteningForTruncation = true
         repo.textAlignment = .center

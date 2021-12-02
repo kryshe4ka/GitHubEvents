@@ -8,7 +8,9 @@ import UIKit
 import CoreData
 
 class EventListDataSource: NSObject, UITableViewDataSource {
-        
+    
+    static let menuTitles = ["Push", "Create", "Delete"]
+    
     var events: [Event] = []
     let pageMAX = 10
     var page = 1

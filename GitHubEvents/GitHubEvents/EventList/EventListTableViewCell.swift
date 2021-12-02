@@ -18,7 +18,7 @@ class EventListTableViewCell: UITableViewCell {
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
         authorImage.contentMode = .scaleAspectFill
-        authorImage.translatesAutoresizingMaskIntoConstraints = false // enable autolayout
+        authorImage.translatesAutoresizingMaskIntoConstraints = false /// enable autolayout
         authorImage.layer.cornerRadius = 35
         authorImage.clipsToBounds = true
         return authorImage
@@ -48,7 +48,7 @@ class EventListTableViewCell: UITableViewCell {
     let containerView: UIView = {
       let view = UIView()
       view.translatesAutoresizingMaskIntoConstraints = false
-      view.clipsToBounds = true // this will make sure its children do not go out of the boundary
+      view.clipsToBounds = true /// this will make sure its children do not go out of the boundary
       return view
     }()
     

@@ -11,13 +11,12 @@ import UIKit
 
 class CoreDataClient: StorageManager {
     static let shared = CoreDataClient()
-//    var managedContext: NSManagedObjectContext?
     var fetchedResultsController: NSFetchedResultsController<EventEntity>?
     let modelName = "Events"
     
     // MARK: - Core Data stack
     lazy var persistentContainer: NSPersistentContainer = {
-      let container = NSPersistentContainer(name: "Events")
+      let container = NSPersistentContainer(name: modelName)
       container.loadPersistentStores(completionHandler: { (storeDescription, error) in
         if let error = error as NSError? {
           fatalError("Unresolved error \(error), \(error.userInfo)")

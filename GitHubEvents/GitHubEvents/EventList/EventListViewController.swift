@@ -10,11 +10,10 @@ import Foundation
 import CoreData
 
 class EventListViewController: UIViewController {
-        
     var eventListContentView = EventListContentView()
     var dataSource = EventListDataSource()
     var page = 1
-    
+        
     override func loadView() {
         view = eventListContentView
     }
@@ -23,14 +22,23 @@ class EventListViewController: UIViewController {
         super.viewDidLoad()
         setupContentView()
         setUpNavigation()
+        setupMenu()
         getEventsFromStorage()
         getNetworkEvents()
+    }
+    
+    func setupMenu() {
+        ///for initial state of menu
+        eventListContentView.menuCollection.selectItem(at: eventListContentView.selectedIndexPath, animated: false, scrollPosition: .centeredVertically)
     }
     
     func setupContentView() {
         eventListContentView.tableView.dataSource = dataSource
         eventListContentView.tableView.delegate = self
         eventListContentView.refreshControl.addTarget(self, action: #selector(self.refreshEventList(_:)), for: .valueChanged)
+        /// set dataSource and delegate for menu collection view
+        eventListContentView.menuCollection.dataSource = self
+        eventListContentView.menuCollection.delegate = self
     }
     
     func setUpNavigation() {
@@ -68,7 +76,7 @@ extension EventListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
        return 100
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let event = dataSource.events[indexPath.row]
         let eventDetails = EventDetailsState(authorImageData: event.avatarImage, repo: event.repo.name ?? "", authorName: event.author?.authorName ?? "")
