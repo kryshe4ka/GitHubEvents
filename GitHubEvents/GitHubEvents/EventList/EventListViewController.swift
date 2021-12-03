@@ -11,7 +11,6 @@ import CoreData
 
 class EventListViewController: UIViewController {
     var eventListContentView = EventListContentView()
-//    var dataSource = EventListDataSource()
     var dataSource = EventListDataSource.shared
 
     var page = 1
@@ -53,7 +52,7 @@ class EventListViewController: UIViewController {
             switch result {
             case .success(let events):
                 self.dataSource.events = events
-//                self.dataSource.filterEvents()
+                self.dataSource.filterEvents()
             case .failure(let error):
                 print(error)
             }
