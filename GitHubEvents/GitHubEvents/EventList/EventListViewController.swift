@@ -30,7 +30,7 @@ class EventListViewController: UIViewController {
     
     func setupMenu() {
         ///for initial state of menu
-        eventListContentView.menuCollection.selectItem(at: eventListContentView.selectedIndexPath, animated: false, scrollPosition: .centeredVertically)
+        eventListContentView.menuBar.menuCollection.selectItem(at: eventListContentView.menuBar.selectedIndexPath, animated: false, scrollPosition: .centeredVertically)
     }
     
     func setupContentView() {
@@ -38,8 +38,8 @@ class EventListViewController: UIViewController {
         eventListContentView.tableView.delegate = self
         eventListContentView.refreshControl.addTarget(self, action: #selector(self.refreshEventList(_:)), for: .valueChanged)
         /// set dataSource and delegate for menu collection view
-        eventListContentView.menuCollection.dataSource = self
-        eventListContentView.menuCollection.delegate = self
+        eventListContentView.menuBar.menuCollection.dataSource = self
+        eventListContentView.menuBar.menuCollection.delegate = self
     }
     
     func setUpNavigation() {

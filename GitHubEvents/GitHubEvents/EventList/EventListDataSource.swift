@@ -10,14 +10,15 @@ import CoreData
 class EventListDataSource: NSObject, UITableViewDataSource {
     
     static let menuTitles = ["PUSH", "CREATE", "DELETE"]
+    let accentColor = UIColor.red
+    
     static let shared = EventListDataSource()
     
     var selectedEvents = [Event]()
     var selectedIndex = 0
-    
     var events: [Event] = []
-    let pageMAX = 10
     var page = 1
+    let pageMAX = 10
     
     func loadMore(_ tableView: UITableView) {
         page += 1

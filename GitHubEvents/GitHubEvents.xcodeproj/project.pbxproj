@@ -26,8 +26,9 @@
 		3DC02A1127464527002F0028 /* StorageManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A1027464527002F0028 /* StorageManagerProtocol.swift */; };
 		3DC02A2427479223002F0028 /* CoreDataClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A2327479223002F0028 /* CoreDataClient.swift */; };
 		3DC02A2927577F95002F0028 /* EventTypeMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A2827577F95002F0028 /* EventTypeMenuCell.swift */; };
-		3DC02A2D2758A93F002F0028 /* EventListViewController+CollectionViewProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A2C2758A93F002F0028 /* EventListViewController+CollectionViewProtocols.swift */; };
+		3DC02A2D2758A93F002F0028 /* MenuCollectionViewProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A2C2758A93F002F0028 /* MenuCollectionViewProtocols.swift */; };
 		3DC02A2F27593FCF002F0028 /* EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A2E27593FCF002F0028 /* EventType.swift */; };
+		3DC02A31275E0124002F0028 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC02A30275E0124002F0028 /* MenuBarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,8 +52,9 @@
 		3DC02A1027464527002F0028 /* StorageManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManagerProtocol.swift; sourceTree = "<group>"; };
 		3DC02A2327479223002F0028 /* CoreDataClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataClient.swift; sourceTree = "<group>"; };
 		3DC02A2827577F95002F0028 /* EventTypeMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTypeMenuCell.swift; sourceTree = "<group>"; };
-		3DC02A2C2758A93F002F0028 /* EventListViewController+CollectionViewProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventListViewController+CollectionViewProtocols.swift"; sourceTree = "<group>"; };
+		3DC02A2C2758A93F002F0028 /* MenuCollectionViewProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCollectionViewProtocols.swift; sourceTree = "<group>"; };
 		3DC02A2E27593FCF002F0028 /* EventType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventType.swift; sourceTree = "<group>"; };
+		3DC02A30275E0124002F0028 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,8 +137,9 @@
 				3D7D9FBA2732977A009DA1EF /* EventListContentView.swift */,
 				3D7D9FBC27329E4F009DA1EF /* EventListTableViewCell.swift */,
 				3DC02A2E27593FCF002F0028 /* EventType.swift */,
+				3DC02A30275E0124002F0028 /* MenuBarView.swift */,
 				3DC02A2827577F95002F0028 /* EventTypeMenuCell.swift */,
-				3DC02A2C2758A93F002F0028 /* EventListViewController+CollectionViewProtocols.swift */,
+				3DC02A2C2758A93F002F0028 /* MenuCollectionViewProtocols.swift */,
 			);
 			path = EventList;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DC02A31275E0124002F0028 /* MenuBarView.swift in Sources */,
 				3D7D9FBD27329E4F009DA1EF /* EventListTableViewCell.swift in Sources */,
 				3D7D9FAB273272D3009DA1EF /* EventListViewController.swift in Sources */,
 				3D7D9FCC2733F196009DA1EF /* EventDetailsContentView.swift in Sources */,
@@ -250,7 +254,7 @@
 				3D7D9FCA2733EC9F009DA1EF /* EventDetailsViewController.swift in Sources */,
 				3D7D9FC12732B64F009DA1EF /* Event.swift in Sources */,
 				3DC02A0B27462906002F0028 /* Events.xcdatamodeld in Sources */,
-				3DC02A2D2758A93F002F0028 /* EventListViewController+CollectionViewProtocols.swift in Sources */,
+				3DC02A2D2758A93F002F0028 /* MenuCollectionViewProtocols.swift in Sources */,
 				3DC02A1127464527002F0028 /* StorageManagerProtocol.swift in Sources */,
 				3D525D78273E6074005CCA0E /* AsynchronousOperation.swift in Sources */,
 			);

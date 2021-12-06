@@ -32,7 +32,7 @@ extension EventListViewController : UICollectionViewDelegate, UICollectionViewDa
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        eventListContentView.selectedIndex = indexPath.item
-        eventListContentView.refreshContent()
+        eventListContentView.menuBar.selectedIndex = indexPath.item
+        eventListContentView.menuBar.refreshContent()
     }
 }

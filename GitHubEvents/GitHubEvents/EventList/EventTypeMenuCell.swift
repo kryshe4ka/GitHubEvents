@@ -11,6 +11,7 @@ import UIKit
 final class EventTypeMenuCell: UICollectionViewCell {
     
     static let reuseIdentifier = String(describing: EventTypeMenuCell.self)
+    var accentColor = EventListDataSource.shared.accentColor
     
     let titleLabel: UILabel = {
         let titleLabel = UILabel()
@@ -37,7 +38,7 @@ final class EventTypeMenuCell: UICollectionViewCell {
     override var isSelected: Bool {
         didSet{
             titleLabel.alpha = isSelected ? 1.0 : 0.6
-            titleLabel.textColor = isSelected ? .red : .black
+            titleLabel.textColor = isSelected ? accentColor : .black
         }
     }
     
