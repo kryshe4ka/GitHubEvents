@@ -8,9 +8,7 @@
 import UIKit
 
 class MenuBarView: UIView {
-    
-    // добавить кастомизацию в инициализаторе для цветов и заголовков
-    
+        
     let menuTitles: [String]
     let accentColor  = EventListDataSource.shared.accentColor
     var indicatorView = UIView()
@@ -51,6 +49,7 @@ class MenuBarView: UIView {
         indicatorView.frame = CGRect(x: menuCollection.bounds.minX, y: menuHeight - indicatorHeight, width: UIScreen.main.bounds.width / CGFloat(menuTitles.count), height: indicatorHeight)
         menuCollection.addSubview(indicatorView)
         
+        // возможно нужно перенести жесты на вью общую (контент вью)
         let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction))
         leftSwipe.direction = .left
         addGestureRecognizer(leftSwipe)

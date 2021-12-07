@@ -15,6 +15,8 @@ struct CellState {
 }
 
 class EventListTableViewCell: UITableViewCell {
+    static let reuseIdentifier = String(describing: EventListTableViewCell.self)
+
     let authorImage: UIImageView = {
         let authorImage = UIImageView()
         authorImage.contentMode = .scaleAspectFill

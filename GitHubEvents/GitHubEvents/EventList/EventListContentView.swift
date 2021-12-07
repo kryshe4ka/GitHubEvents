@@ -9,36 +9,33 @@ import Foundation
 import UIKit
 
 class EventListContentView: UIView {
-    let refreshControl = UIRefreshControl()
-    
-    let menuBar = MenuBarView(withTitles: EventListDataSource.menuTitles)
     var menuHeight: CGFloat = 40
-    
-    let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: UITableView.Style.plain)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(EventListTableViewCell.self, forCellReuseIdentifier: "TableViewCell")
-        return tableView
+    let menuBar: MenuBarView = {
+        let menuBar = MenuBarView(withTitles: EventListDataSource.shared.menuTitles)
+        menuBar.translatesAutoresizingMaskIntoConstraints = false
+        return menuBar
+    }()
+    let contentView: ContentView = {
+        let contentView = ContentView(withEvents: EventListDataSource.shared.events)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        return contentView
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        createSubviews()
+        setupSubviews()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        createSubviews()
+        setupSubviews()
     }
     
-    func createSubviews() {
+    func setupSubviews() {
         backgroundColor = .white
         addSubview(menuBar)
-        menuBar.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(tableView)
+        addSubview(contentView)
         addConstrains()
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        tableView.addSubview(refreshControl)
     }
         
     func addConstrains() {
@@ -50,10 +47,10 @@ class EventListContentView: UIView {
         ])
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: menuHeight),
-            tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor)
+            contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: menuHeight),
+            contentView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor)
         ])
     }
 }
