@@ -49,7 +49,6 @@ class MenuBarView: UIView {
         indicatorView.frame = CGRect(x: menuCollection.bounds.minX, y: menuHeight - indicatorHeight, width: UIScreen.main.bounds.width / CGFloat(menuTitles.count), height: indicatorHeight)
         menuCollection.addSubview(indicatorView)
         
-        // возможно нужно перенести жесты на вью общую (контент вью)
         let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction))
         leftSwipe.direction = .left
         addGestureRecognizer(leftSwipe)
@@ -70,16 +69,12 @@ class MenuBarView: UIView {
         }
         selectedIndexPath = IndexPath(item: selectedIndex, section: 0)
         menuCollection.selectItem(at: selectedIndexPath, animated: true, scrollPosition: .centeredVertically)
-        refreshContent()
+        refreshIndicator()
+        guard let superView = superview as? EventListContentView else { return }
+        superView.contentView.contentCollection.scrollToItem(at: selectedIndexPath, at: .centeredHorizontally, animated: true)
     }
     
-    func refreshContent(){
-        /// configure events array
-        EventListDataSource.shared.selectedIndex = selectedIndex
-        EventListDataSource.shared.filterEvents()
-        /// refresh table with selected type of events
-//        tableView.reloadData()
-        
+    func refreshIndicator(){
         let desiredX = (menuCollection.bounds.width / CGFloat(menuTitles.count)) * CGFloat(selectedIndex)
         UIView.animate(withDuration: 0.3) {
              self.indicatorView.frame = CGRect(x: desiredX, y: self.menuCollection.bounds.maxY - self.indicatorHeight, width: self.menuCollection.bounds.width / CGFloat(self.menuTitles.count), height: self.indicatorHeight)

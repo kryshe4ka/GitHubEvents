@@ -37,3 +37,26 @@ extension DelegateAndDataSourceForContent: UICollectionViewDelegateFlowLayout {
         return CGSize(width: collectionView.frame.size.width, height: collectionView.frame.size.height)
     }
 }
+
+// MARK: - UICollectionView Delegate
+extension DelegateAndDataSourceForContent: UICollectionViewDelegate {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard let controller = controller else { return }
+        let selectedIndex = controller.eventListContentView.contentView.getCurrentPage()
+        controller.eventListContentView.contentView.selectedIndex = selectedIndex
+        controller.eventListContentView.menuBar.selectedIndex = selectedIndex
+        controller.eventListContentView.menuBar.refreshIndicator()
+        controller.eventListContentView.menuBar.menuCollection.selectItem(at: IndexPath(row: selectedIndex, section: 0), animated: true, scrollPosition: .centeredVertically)
+    }
+}
+
+extension ContentView {
+    func getCurrentPage() -> Int {
+        let visibleRect = CGRect(origin: contentCollection.contentOffset, size: contentCollection.bounds.size)
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        if let visibleIndexPath = contentCollection.indexPathForItem(at: visiblePoint) {
+            return visibleIndexPath.row
+        }
+        return selectedIndex
+    }
+}

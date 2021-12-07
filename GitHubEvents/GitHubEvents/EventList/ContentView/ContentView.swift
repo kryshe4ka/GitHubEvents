@@ -10,6 +10,8 @@ import UIKit
 
 class ContentView: UIView {
             
+    var selectedIndex = 0
+
     lazy var contentCollection: UICollectionView = {
         /// setup collection layout
         let layout = UICollectionViewFlowLayout()
@@ -18,7 +20,7 @@ class ContentView: UIView {
         contentCollection.register(ContentCollectionViewCell.self, forCellWithReuseIdentifier: ContentCollectionViewCell.reuseIdentifier)
         contentCollection.translatesAutoresizingMaskIntoConstraints = false
         contentCollection.showsHorizontalScrollIndicator = true
-        contentCollection.isPagingEnabled = true // for "pages" behavior
+        contentCollection.isPagingEnabled = true /// for "pages" behavior
         contentCollection.register(ContentCollectionViewCell.self, forCellWithReuseIdentifier: ContentCollectionViewCell.reuseIdentifier)
         return contentCollection
     }()

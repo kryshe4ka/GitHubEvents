@@ -11,11 +11,13 @@ import UIKit
 class DelegateAndDataSourceForMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
     var controller: EventListViewController?
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    {
         return EventListDataSource.shared.menuTitles.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+    {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventTypeMenuCell.reuseIdentifier, for: indexPath) as! EventTypeMenuCell
         cell.setupCell(text: EventListDataSource.shared.menuTitles[indexPath.item])
         return cell
@@ -25,7 +27,8 @@ class DelegateAndDataSourceForMenu: NSObject, UICollectionViewDataSource, UIColl
     {
         guard let controller = controller else { return }
         controller.eventListContentView.menuBar.selectedIndex = indexPath.item
-        controller.eventListContentView.menuBar.refreshContent()
+        controller.eventListContentView.menuBar.refreshIndicator()
+        controller.eventListContentView.contentView.contentCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
 }
 

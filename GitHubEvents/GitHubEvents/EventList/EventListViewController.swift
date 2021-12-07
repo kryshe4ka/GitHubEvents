@@ -25,7 +25,6 @@ class EventListViewController: UIViewController {
         setUpNavigation()
         setupMenu()
         getEventsFromStorage()
-//        getNetworkEvents()
     }
     
     func setupMenu() {
@@ -54,33 +53,9 @@ class EventListViewController: UIViewController {
             switch result {
             case .success(let events):
                 EventListDataSource.shared.refreshEvents(with: events)
-//                self.eventListContentView.contentView.contentCollection.reloadData()
             case .failure(let error):
                 print(error)
             }
         }
     }
-    
-//    func getNetworkEvents() {
-//        NetworkClient.getEvents(page: page, tableView: self.eventListContentView.tableView) { [weak self] events in
-//            guard let self = self else { return }
-//            self.dataSource.events = events
-//            self.eventListContentView.refreshControl.endRefreshing()
-//        }
-//    }
 }
-
-// MARK: - UITableViewDelegate
-//extension EventListViewController: UITableViewDelegate {
-//
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//       return 100
-//    }
-//
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let event = EventListDataSource.shared.events[indexPath.row]
-//        let eventDetails = EventDetailsState(authorImageData: event.avatarImage, repo: event.repo.name ?? "", authorName: event.author?.authorName ?? "")
-//        let eventDetailsViewController = EventDetailsViewController(eventDetails: eventDetails)
-//        self.navigationController?.pushViewController(eventDetailsViewController, animated: true)
-//    }
-//}
